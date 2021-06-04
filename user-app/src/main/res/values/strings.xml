@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MyEcom</string>
+    <string name="title_checkout">CHECKOUT</string>
 </resources>
