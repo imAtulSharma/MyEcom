@@ -9,6 +9,7 @@
         android:id="@+id/product">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:paddingBottom="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -80,13 +81,13 @@
                 style="@style/img_btn"
                 android:contentDescription="@string/desc_product_add"
                 android:src="@drawable/ic_edit"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/quantity"
-                style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                android:textStyle="bold"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="8dp"
