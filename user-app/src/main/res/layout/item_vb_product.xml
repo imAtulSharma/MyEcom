@@ -24,6 +24,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <ProgressBar
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:indeterminate="true"
+                android:layout_marginStart="@dimen/margin_default"
+                android:layout_marginTop="@dimen/margin_default"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/title_product"
                 style="@style/TextAppearance.MaterialComponents.Headline6"
