@@ -10,12 +10,12 @@ public class Cart {
     /**
      * Total amount of all items in cart
      */
-    float totalAmount;
+    public float totalAmount;
 
     /**
      * To number of items in cart
      */
-    int numberOfItems;
+    public int numberOfItems;
 
     /**
      * Map of all items in cart
@@ -138,6 +138,10 @@ public class Cart {
             cartItems.remove(key);
     }
 
+    public boolean isEmpty(){
+        if (numberOfItems == 0) return true;
+        return false;
+    }
     /**
      * Overriding the {@link Object#toString()} method
      *

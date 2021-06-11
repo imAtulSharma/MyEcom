@@ -9,7 +9,6 @@
         android:id="@+id/product">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:paddingBottom="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -22,15 +21,17 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/desc_product_img"
                 android:src="@drawable/apple"
+                android:visibility="invisible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ProgressBar
+                android:id="@+id/imgLoader"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:indeterminate="true"
                 android:layout_marginStart="@dimen/margin_default"
                 android:layout_marginTop="@dimen/margin_default"
+                android:indeterminate="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,8 +64,9 @@
             <ImageView
                 android:id="@+id/btn_add"
                 style="@style/img_btn"
+                android:layout_height="30dp"
                 android:contentDescription="@string/desc_product_add"
-                android:src="@drawable/ic_add"
+                android:src="@drawable/ic_add__1_"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -73,12 +75,14 @@
                 android:id="@+id/grp_zero_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:constraint_referenced_ids="btn_add" />
 
             <ImageView
                 android:id="@+id/btn_edit"
                 style="@style/img_btn"
+                android:layout_marginTop="36dp"
+                android:layout_marginEnd="24dp"
                 android:contentDescription="@string/desc_product_add"
                 android:src="@drawable/ic_edit"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -86,12 +90,12 @@
 
             <TextView
                 android:id="@+id/quantity"
-                android:textStyle="bold"
                 style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="8dp"
                 android:text="2.5kg"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_edit"
                 app:layout_constraintEnd_toStartOf="@+id/btn_edit"
                 app:layout_constraintTop_toTopOf="@+id/btn_edit" />
@@ -100,6 +104,7 @@
                 android:id="@+id/grp_non_zero_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="invisible"
                 app:constraint_referenced_ids="btn_edit,quantity" />
 
             <androidx.constraintlayout.widget.Barrier

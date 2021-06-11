@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/variant_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:text=""
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="16dp"
+        android:gravity="end">
+
+        <ImageView
+            android:id="@+id/btnDec"
+            style="@style/img_btn2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="16dp"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_remove" />
+
+    <TextView
+         android:id="@+id/qty_current"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/qty_init"
+        android:visibility="invisible"/>
+
+
+        <ImageView
+            android:id="@+id/btnInc"
+            style="@style/img_btn2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="28dp"
+            app:srcCompat="@drawable/ic_add__1_" />
+    </LinearLayout>
+
+</LinearLayout>

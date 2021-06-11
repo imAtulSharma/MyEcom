@@ -1,17 +1,36 @@
 package com.streamliners.myecom;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.gson.Gson;
+import com.streamliners.models.Cart;
+import com.streamliners.models.Product;
+import com.streamliners.models.Variant;
 import com.streamliners.myecom.databinding.ActivityMainBinding;
 import com.streamliners.myecom.databinding.ItemVbProductBinding;
 import com.streamliners.myecom.databinding.ItemWbProductBinding;
+import com.streamliners.myecom.tmp.ProductsHelper;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    SharedPreferences mPrefs;
     ActivityMainBinding mainBinding;
-
+    private ProductsAdapter adapter;
+    private Cart cart = new Cart();
+    List<Product> products;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,24 +38,55 @@ public class MainActivity extends AppCompatActivity {
         mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
 
-        for (int i = 1; i <= 10; i++) {
-                ItemWbProductBinding wbCardBinding = ItemWbProductBinding.inflate(getLayoutInflater());
+        mPrefs = getPreferences(MODE_PRIVATE);
 
-                ItemVbProductBinding vbCardBinding = ItemVbProductBinding.inflate(getLayoutInflater());
-                vbCardBinding.btnVariants.setOnClickListener(view -> {
-                    if (vbCardBinding.btnVariants.getRotation() == 180) {
-                        vbCardBinding.btnVariants.setRotation(0);
-                        vbCardBinding.variants.setVisibility(View.GONE);
-                        vbCardBinding.cl.setPadding(0, 0, 0, 56);
-                        return;
-                    }
-                    vbCardBinding.btnVariants.setRotation(180);
-                    vbCardBinding.variants.setVisibility(View.VISIBLE);
-                    vbCardBinding.cl.setPadding(0, 0, 0, 8);
-                });
+        if (mPrefs.contains(Constants.cart)) getDataFromSharedPrefs();
 
-                mainBinding.list.addView(vbCardBinding.getRoot());
-                mainBinding.list.addView(wbCardBinding.getRoot());
-        }
+        products = new ProductsHelper().getProducts();
+
+
+        setupAdapter();
+    }
+
+    private void setupAdapter() {
+        AdapterCallbacksListener listener = new AdapterCallbacksListener() {
+            @Override
+            public void onCartUpdated(int itemPosition) {
+                updateCartSummary();
+                adapter.notifyItemChanged(itemPosition);
+            }
+        };
+
+        adapter = new ProductsAdapter(this
+                , products
+                , cart
+                , listener);
+
+        mainBinding.list.setLayoutManager(new LinearLayoutManager(this));
+        mainBinding.list.setAdapter(adapter);
+    }
+
+    public void updateCartSummary(){
+        mainBinding.tvTotalAmount.setText("₹" + cart.totalAmount + "");
+        mainBinding.tvTotalItems.setText(cart.numberOfItems + " items");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(cart);
+        prefsEditor.putString(Constants.cart, json);
+        prefsEditor.apply();
+        prefsEditor.commit();
+    }
+
+    public void getDataFromSharedPrefs(){
+        Gson gson = new Gson();
+        String json = mPrefs.getString(Constants.cart, "");
+        cart = gson.fromJson(json, Cart.class);
+        updateCartSummary();
     }
 }

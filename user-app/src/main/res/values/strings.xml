@@ -5,4 +5,8 @@
     <string name="desc_product_img">product image</string>
     <string name="desc_remove_product">To remove product</string>
     <string name="desc_variants_drop_down">To see variants available</string>
+    <string name="qty_init">0</string>
+    <string name="remove_all">REMOVE ALL</string>
+    <string name="save">SAVE</string>
+    <string name="product_name">Product Name</string>
 </resources>
