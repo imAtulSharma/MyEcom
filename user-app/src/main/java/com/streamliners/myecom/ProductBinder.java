@@ -262,18 +262,19 @@ public class ProductBinder {
         }
         picker2.setDisplayedValues(pickerVals2);
 
+        //Restore Selections
         if (cart.cartItems.containsKey(product.name)){
             int kg = (int) cart.cartItems.get(product.name).qty;
             String gm = String.valueOf(cart.cartItems.get(product.name).qty);
             gm = gm.substring(gm.indexOf( "." )).replace(".","");
             int g = Integer.parseInt(gm);
             int indexG;
-            if (gm.length() == 2) indexG = (g*10-500)/50;
-            else indexG = (g*100-500)/50;
+            if (gm.length() == 2) indexG = (g*10)/50;
+            else indexG = (g*100)/50;
 
 
-            picker1.setValue(kg-1);
-            picker2.setValue(indexG+1);
+            picker1.setValue(kg);
+            picker2.setValue(indexG);
         }
 
         //Set onClickListeners on save button of dialog box
@@ -343,6 +344,8 @@ public class ProductBinder {
             ItemVariantBinding ivb = ItemVariantBinding.inflate(inflater);
             String price = String.valueOf(product.variants.get(i).price).replaceFirst("\\.0+$", "");
             ivb.variantName.setText("₹"+ price + " - " + product.variants.get(i).name);
+
+            //Restore Selections
             if (cart.cartItems.containsKey(product.name + " " + product.variants.get(i).name)){
                 String qty = String.valueOf(cart.cartItems.get(product.name + " " + product.variants.get(i).name).qty).replaceFirst("\\.0+$", "");
                 ivb.qtyCurrent.setText(qty);

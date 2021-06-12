@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateCartSummary(){
-        mainBinding.tvTotalAmount.setText("₹" + cart.totalAmount + "");
+        mainBinding.tvTotalAmount.setText("₹" + cart.totalAmount);
         mainBinding.tvTotalItems.setText(cart.numberOfItems + " items");
     }
 
