@@ -175,7 +175,8 @@ public class ProductBinder {
         for (int i = 0; i < product.variants.size(); i++){
             ChipVariantBinding b = ChipVariantBinding.inflate(inflater);
             b.getRoot().setClickable(false);
-            b.getRoot().setText(product.variants.get(i).name + " - ₹" + product.variants.get(i).price);
+            String price = String.valueOf(product.variants.get(i).price).replaceFirst("\\.0+$", "");
+            b.getRoot().setText(product.variants.get(i).name + " - ₹" + price);
             vbProductBinding.variants.addView(b.getRoot());
         }
 
