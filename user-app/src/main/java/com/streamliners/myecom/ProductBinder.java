@@ -27,6 +27,8 @@ import com.streamliners.myecom.databinding.DialogWeightPickerBinding;
 import com.streamliners.myecom.databinding.ItemVariantBinding;
 import com.streamliners.myecom.databinding.ItemVbProductBinding;
 import com.streamliners.myecom.databinding.ItemWbProductBinding;
+import com.streamliners.myecom.dialogs.VariantsQtyPickerDialog;
+import com.streamliners.myecom.dialogs.WeightPickerDialog;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -38,10 +40,6 @@ public class ProductBinder {
     LayoutInflater inflater;
     AdapterCallbacksListener listener;
     Cart cart;
-    private AlertDialog dialog;
-    DialogWeightPickerBinding weightPickerBinding;
-    DialogVariantsQtyPickerBinding variantsQtyPickerBinding;
-    public int currentPos = 0;
 
     /**
      * Parameterised Constructor for ProductBinder
@@ -69,11 +67,8 @@ public class ProductBinder {
         wbProductBinding.subtitleProduct.setText("₹ " + price + "/kg");
 
         // Update Binding accordingly if product is present in cart
-        if (cart.cartItems.containsKey(product.name)){
-            wbProductBinding.grpNonZeroQuantity.setVisibility(View.VISIBLE);
-            wbProductBinding.grpZeroQuantity.setVisibility(View.INVISIBLE);
-            wbProductBinding.quantity.setText(cart.cartItems.get(product.name).qty + "");
-        }
+        updateWBProductBinding(wbProductBinding, product);
+
         //Load Image
         Glide.with(context)
                 .asBitmap()
@@ -99,14 +94,15 @@ public class ProductBinder {
         wbProductBinding.btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setupWBProductDialog(product, wbProductBinding);
 
-                assert weightPickerBinding != null;
-                if(weightPickerBinding.getRoot().getParent()!=null)
-                    ((ViewGroup) weightPickerBinding.getRoot().getParent()).removeView(weightPickerBinding.getRoot());
-                dialog = new MaterialAlertDialogBuilder(context, R.style.CustomDialogTheme)
-                        .setView(weightPickerBinding.getRoot())
-                        .show();
+                new WeightPickerDialog(context, cart).show(product, new WeightPickerDialog.WeightPickerCompleteListener() {
+                    @Override
+                    public void onCompleted() {
+                        updateWBProductBinding(wbProductBinding, product);
+//                      Callback to update cart
+                        listener.onCartUpdated();
+                    }
+                });
             }
         });
 
@@ -115,16 +111,15 @@ public class ProductBinder {
         wbProductBinding.btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setupWBProductDialog(product, wbProductBinding);
-                if(weightPickerBinding.getRoot().getParent()!=null)
-                    ((ViewGroup) weightPickerBinding.getRoot().getParent()).removeView(weightPickerBinding.getRoot());
 
-                dialog = new MaterialAlertDialogBuilder(context, R.style.CustomDialogTheme)
-                        .setView(weightPickerBinding.getRoot())
-                        .show();
+                new WeightPickerDialog(context, cart).show(product, new WeightPickerDialog.WeightPickerCompleteListener() {
+                    @Override
+                    public void onCompleted() {
+                        updateWBProductBinding(wbProductBinding, product);
+                    }
+                });
             }
         });
-        currentPos++;
     }
 
     /**
@@ -142,17 +137,14 @@ public class ProductBinder {
         vbProductBinding.subtitleProduct.setText(product.variants.size() + " Variants");
 
         // Update Binding accordingly if product is present in cart
-        int quantity = 0;
-        for (int i = 0; i<product.variants.size(); i++){
-            if (cart.cartItems.containsKey(product.name + " " + product.variants.get(i).name)){
-                quantity += cart.cartItems.get(product.name + " " + product.variants.get(i).name).qty;
-            }
-        }
+//        int quantity = 0;
+//        for (int i = 0; i<product.variants.size(); i++){
+//            if (cart.cartItems.containsKey(product.name + " " + product.variants.get(i).name)){
+//                quantity += cart.cartItems.get(product.name + " " + product.variants.get(i).name).qty;
+//            }
+//        }
 
-        if (quantity>0){
-            vbProductBinding.grpNonZeroQuantity.setVisibility(View.VISIBLE);
-            vbProductBinding.quantity.setText(quantity + "");
-        }
+        updateVBProductBinding(vbProductBinding, product);
 
         //Set image of the product
         Glide.with(context)
@@ -203,12 +195,14 @@ public class ProductBinder {
         vbProductBinding.btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setupVBProductDialog(product, vbProductBinding);
-                if(variantsQtyPickerBinding.getRoot().getParent()!=null)
-                    ((ViewGroup) variantsQtyPickerBinding.getRoot().getParent()).removeView(variantsQtyPickerBinding.getRoot());
-                dialog = new MaterialAlertDialogBuilder(context, R.style.CustomDialogTheme)
-                        .setView(variantsQtyPickerBinding.getRoot())
-                        .show();
+
+                new VariantsQtyPickerDialog(context, cart)
+                        .show(product, new VariantsQtyPickerDialog.VariantsQtyPickerCompleteListener() {
+                            @Override
+                            public void onCompleted() {
+                                updateVBProductBinding(vbProductBinding, product);
+                            }
+                        });
             }
         });
 
@@ -216,228 +210,56 @@ public class ProductBinder {
         vbProductBinding.btnRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setupVBProductDialog(product, vbProductBinding);
-                if(variantsQtyPickerBinding.getRoot().getParent()!=null)
-                    ((ViewGroup) variantsQtyPickerBinding.getRoot().getParent()).removeView(variantsQtyPickerBinding.getRoot());
-                dialog = new MaterialAlertDialogBuilder(context,R.style.CustomDialogTheme)
-                        .setView(variantsQtyPickerBinding.getRoot())
-                        .show();
-            }
-        });
-        currentPos++;
-    }
-
-    /**
-     * Setup WB Product Dialog box
-     * @param product
-     * @param wbProductBinding
-     */
-    public void setupWBProductDialog(Product product, ItemWbProductBinding wbProductBinding) {
-        //Implementation of dialog box
-        weightPickerBinding = DialogWeightPickerBinding.inflate(inflater);
-        weightPickerBinding.productName.setText(product.name);
-
-        //Set Number Picker for KG
-        NumberPicker picker1 = weightPickerBinding.numberPicker;
-        picker1.setMaxValue(9);
-        picker1.setMinValue(0);
-        String[] pickerVals1 = new String[11];
-        pickerVals1[0] = "0kg";
-        for (int i = 2; i < 12; i++) {
-            pickerVals1[i - 1] = i-1 + "kg";
-        }
-        picker1.setDisplayedValues(pickerVals1);
-
-        //Set Number Picker for grams
-        NumberPicker picker2 = weightPickerBinding.numberPicker2;
-        picker2.setMaxValue(19);
-        picker2.setMinValue(0);
-        String[] pickerVals2 = new String[20];
-        pickerVals2[0] = "0g";
-        int qty = 50;
-        int counter = 1;
-        while (qty <= 950) {
-            pickerVals2[counter] = qty + "g";
-            qty += 50;
-            counter++;
-        }
-        picker2.setDisplayedValues(pickerVals2);
-
-        //Restore Selections
-        if (cart.cartItems.containsKey(product.name)){
-            int kg = (int) cart.cartItems.get(product.name).qty;
-            String gm = String.valueOf(cart.cartItems.get(product.name).qty);
-            gm = gm.substring(gm.indexOf( "." )).replace(".","");
-            int g = Integer.parseInt(gm);
-            int indexG;
-            if (gm.length() == 2) indexG = (g*10)/50;
-            else indexG = (g*100)/50;
-
-
-            picker1.setValue(kg);
-            picker2.setValue(indexG);
-        }
-
-        //Set onClickListeners on save button of dialog box
-        int k = currentPos;
-        weightPickerBinding.btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //get qty selected in number picker
-                String kg = pickerVals1[picker1.getValue()];
-                String gm = pickerVals2[picker2.getValue()];
-                kg = kg.replace("kg", "");
-                gm = gm.replace("g", "");
-
-                //Add given qty to cart and update the binding respectively
-                float qty = Float.parseFloat(kg) + Float.parseFloat(gm) / 1000;
-                String minMessage = "Minimum " + product.minQty + " kg needs to be selected";
-                if (qty< product.minQty) {
-                    Toast.makeText(context, minMessage, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                cart.add(product, qty);
-                //Update data in wbProduct binding
-                wbProductBinding.grpNonZeroQuantity.setVisibility(View.VISIBLE);
-                wbProductBinding.quantity.setText(qty + "");
-                wbProductBinding.grpZeroQuantity.setVisibility(View.INVISIBLE);
-
-                //Callback to update cart
-                listener.onCartUpdated(k);
-                dialog.dismiss();
-            }
-        });
-
-        weightPickerBinding.btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Remove product from cart
-                if (cart.cartItems.containsKey(product.name)) cart.remove(product);
-                else {
-                    dialog.dismiss();
-                    return;
-                }
-                //Update data in wbProduct binding
-                wbProductBinding.grpZeroQuantity.setVisibility(View.VISIBLE);
-                wbProductBinding.grpNonZeroQuantity.setVisibility(View.GONE);
-
-                //Callback to update cart
-                listener.onCartUpdated(k);
-                dialog.dismiss();
+                new VariantsQtyPickerDialog(context, cart)
+                        .show(product, new VariantsQtyPickerDialog.VariantsQtyPickerCompleteListener() {
+                            @Override
+                            public void onCompleted() {
+                                updateVBProductBinding(vbProductBinding, product);
+                            }
+                        });
             }
         });
     }
 
-    /**
-     * Setup for VB Product Dialog box
-     * @param product
-     * @param vbProductBinding
-     */
-    public void setupVBProductDialog(Product product, ItemVbProductBinding vbProductBinding){
-        //Set up variants quantity picker dialog
-        variantsQtyPickerBinding = DialogVariantsQtyPickerBinding.inflate(inflater);
-        variantsQtyPickerBinding.productName.setText(product.name);
+    private void  updateWBProductBinding(ItemWbProductBinding wbProductBinding, Product product){
+        if (!cart.cartItems.containsKey(product.name)) {
+            wbProductBinding.grpZeroQuantity.setVisibility(View.VISIBLE);
+            wbProductBinding.grpNonZeroQuantity.setVisibility(View.GONE);
+            wbProductBinding.quantity.setText("0");
+        }
+        else {
+            wbProductBinding.grpNonZeroQuantity.setVisibility(View.VISIBLE);
+            wbProductBinding.quantity.setText(cart.cartItems.get(product.name).qty + "");
+            wbProductBinding.grpZeroQuantity.setVisibility(View.INVISIBLE);
+        }
+        listener.onCartUpdated();
+    }
 
-        List<ItemVariantBinding> itemVariantBindings = new ArrayList<>();
 
-        //Add variant items in the dialog
-        for (int i = 0; i<product.variants.size(); i++){
-            ItemVariantBinding ivb = ItemVariantBinding.inflate(inflater);
-            String price = String.valueOf(product.variants.get(i).price).replaceFirst("\\.0+$", "");
-            ivb.variantName.setText("₹"+ price + " - " + product.variants.get(i).name);
+    private void updateVBProductBinding(ItemVbProductBinding vbProductBinding, Product product){
+        int qty = 0;
 
-            //Restore Selections
-            if (cart.cartItems.containsKey(product.name + " " + product.variants.get(i).name)){
-                String qty = String.valueOf(cart.cartItems.get(product.name + " " + product.variants.get(i).name).qty).replaceFirst("\\.0+$", "");
-                ivb.qtyCurrent.setText(qty);
-                ivb.btnDec.setVisibility(View.VISIBLE);
-                ivb.qtyCurrent.setVisibility(View.VISIBLE);
-            }
-            itemVariantBindings.add(ivb);
-
-            //Setup Increment button
-            ivb.btnInc.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int currQty = Integer.parseInt(ivb.qtyCurrent.getText().toString());
-                    if (currQty == 0) {
-                        ivb.btnDec.setVisibility(View.VISIBLE);
-                        ivb.qtyCurrent.setVisibility(View.VISIBLE);
-                    }
-                    ivb.qtyCurrent.setText(++currQty + "");
-                }
-            });
-
-            //Setup decrement button
-            ivb.btnDec.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int currQty = Integer.parseInt(ivb.qtyCurrent.getText().toString())-1;
-                    if (currQty == 0) {
-                        ivb.btnDec.setVisibility(View.INVISIBLE);
-                        ivb.qtyCurrent.setVisibility(View.INVISIBLE);
-                    }
-                    ivb.qtyCurrent.setText(currQty + "");
-                }
-            });
-            variantsQtyPickerBinding.variantsHolder.addView(ivb.getRoot());
+        //Add product variants to cart according to selected qty
+        for (int i = 0;i<product.variants.size(); i++){
+            if (cart.cartItems.containsKey(product.name + " "+ product.variants.get(i).name))
+                qty += cart.cartItems.get(product.name + " " + product.variants.get(i).name).qty;
         }
 
-        //Set on click listener for save and remove all button of dialog box
+        //Update data in vbProduct binding
+        if (qty == 0) {
+            vbProductBinding.grpNonZeroQuantity.setVisibility(View.GONE);
+            vbProductBinding.quantity.setText("0");
+            // Update ItemVariantBinding and set 0 value for each
+        }
+        else {
+            vbProductBinding.grpNonZeroQuantity.setVisibility(View.VISIBLE);
+            vbProductBinding.quantity.setText(qty + "");
+        }
 
-        int k = currentPos;
-        variantsQtyPickerBinding.btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int qty = 0;
-                //Remove all variants first to overcome duplicacy
-                cart.removeAllVariantsOfVariantBasedProduct(product);
-
-                //Add product variants to cart according to selected qty
-                for (int i = 0;i<product.variants.size(); i++){
-                    ItemVariantBinding ivb = itemVariantBindings.get(i);
-                    qty += Integer.parseInt(ivb.qtyCurrent.getText().toString());
-
-                    for (int j = 0; j < Integer.parseInt(ivb.qtyCurrent.getText().toString()); j++){
-                        cart.add(product, product.variants.get(i));
-                    }
-                }
-
-                //Update data in vbProduct binding
-                if (qty == 0)
-                    vbProductBinding.grpNonZeroQuantity.setVisibility(View.GONE);
-                else vbProductBinding.grpNonZeroQuantity.setVisibility(View.VISIBLE);
-
-                vbProductBinding.quantity.setText(qty + "");
-
-                //Callback to update cart
-                listener.onCartUpdated(k);
-                dialog.dismiss();
-            }
-        });
-
-        variantsQtyPickerBinding.btnRemoveAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Remove all variants from cart
-                cart.removeAllVariantsOfVariantBasedProduct(product);
-
-                // Update ItemVariantBinding and set 0 value for each
-                for (int i = 0; i<product.variants.size(); i++){
-                    ItemVariantBinding ivb = itemVariantBindings.get(i);
-                    ivb.qtyCurrent.setText("0");
-                    ivb.btnDec.setVisibility(View.INVISIBLE);
-                    ivb.qtyCurrent.setVisibility(View.INVISIBLE);
-                }
-
-                //Update data in vbProduct binding
-                vbProductBinding.quantity.setText("0");
-                vbProductBinding.grpNonZeroQuantity.setVisibility(View.GONE);
-
-                //Callback to update cart
-                listener.onCartUpdated(k);
-                dialog.dismiss();
-            }
-        });
+        //Callback to update cart
+        listener.onCartUpdated();
     }
+
+
+
 }

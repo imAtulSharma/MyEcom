@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
 
@@ -44,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
         products = new ProductsHelper().getProducts();
 
+        if (cart.isEmpty()) mainBinding.cartSummary.setVisibility(View.GONE);
+        else mainBinding.cartSummary.setVisibility(View.VISIBLE);
 
         setupAdapter();
     }
@@ -51,9 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private void setupAdapter() {
         AdapterCallbacksListener listener = new AdapterCallbacksListener() {
             @Override
-            public void onCartUpdated(int itemPosition) {
+            public void onCartUpdated() {
                 updateCartSummary();
-                adapter.notifyItemChanged(itemPosition);
             }
         };
 
@@ -67,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateCartSummary(){
+        if (cart.isEmpty()) mainBinding.cartSummary.setVisibility(View.GONE);
+        else mainBinding.cartSummary.setVisibility(View.VISIBLE);
         mainBinding.tvTotalAmount.setText("₹" + cart.totalAmount);
         mainBinding.tvTotalItems.setText(cart.numberOfItems + " items");
     }
