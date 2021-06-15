@@ -17,7 +17,7 @@ public class ProductsHelper {
                 Arrays.asList(new Variant("500g", 96), new Variant("1kg", 180))
         ));
 
-        Product apple = new Product("Apple",Uri.parse("android.resource://com.streamliners.myecom/drawable/apple").toString(), (float) 0.2, 100);
+        Product apple = new Product("Apple",Uri.parse("android.resource://com.streamliners.myecom/drawable/apple").toString(), (float) 0.55, 100);
 
         Product banana = new Product("Banana", Uri.parse("android.resource://com.streamliners.myecom/drawable/banane_large").toString(),1,30);
 

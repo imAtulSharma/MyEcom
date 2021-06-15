@@ -16,10 +16,13 @@ import com.streamliners.myecom.MainActivity;
 import com.streamliners.myecom.R;
 import com.streamliners.myecom.databinding.DialogWeightPickerBinding;
 
+import java.util.List;
+
 public class WeightPickerDialog {
     private final LayoutInflater inflater;
     private Cart cart;
     private Context context;
+
 
     public WeightPickerDialog(Context context, Cart cart){
         this.context = context;
@@ -78,6 +81,89 @@ public class WeightPickerDialog {
         }
         picker2.setDisplayedValues(pickerVals2);
 
+        //Full GramPicker Array
+        String[] gramPickers= new String[20];
+        gramPickers[0] = "0g";
+        int qtyG = 50;
+        int counterG = 1;
+        while (qtyG <= 950) {
+            gramPickers[counterG] = qtyG + "g";
+            qtyG += 50;
+            counterG++;
+        }
+
+        if (minKg == 0) {
+            weightPickerBinding.numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    String[] kilograms = picker.getDisplayedValues();
+                    String kg = kilograms[picker.getValue()].replace("kg", "");
+
+                    if (Integer.parseInt(kg) >= ((int) product.minQty + 1)) {
+
+                        String gm;
+                        if (picker2.getDisplayedValues() == pickerVals2)
+                            gm = pickerVals2[picker2.getValue()];
+                        else gm = gramPickers[picker2.getValue()];
+
+                        picker2.setDisplayedValues(gramPickers);
+                        picker2.setMaxValue(19);
+                        picker2.setMinValue(0);
+
+
+                        //Index for grams number picker
+                        int indexG = 0;
+                        if (picker2.getDisplayedValues() == pickerVals2) {
+                            for (int i = 0; i < pickerVals2.length; i++) {
+                                if (pickerVals2[i].equals(gm)) {
+                                    indexG = i;
+                                    break;
+                                }
+                            }
+                        } else {
+                            for (int i = 0; i < gramPickers.length; i++) {
+                                if (gramPickers[i].equals(gm)) {
+                                    indexG = i;
+                                    break;
+                                }
+                            }
+                        }
+
+                        picker2.setValue(indexG);
+                    } else {
+                        String gm;
+                        if (picker2.getDisplayedValues() == pickerVals2)
+                            gm = pickerVals2[picker2.getValue()];
+                        else gm = gramPickers[picker2.getValue()];
+
+                        int indexG = 0;
+                        if (Integer.parseInt(gm.replace("g", "")) <= minG) picker2.setValue(0);
+                        else {
+                            if (picker2.getDisplayedValues() == gramPickers) {
+                                for (int i = 0; i < pickerVals2.length; i++) {
+                                    if (pickerVals2[i].equals(gm)) {
+                                        indexG = i;
+                                        break;
+                                    }
+                                }
+                            } else {
+                                for (int i = 0; i < gramPickers.length; i++) {
+                                    if (gramPickers[i].equals(gm)) {
+                                        indexG = i;
+                                        break;
+                                    }
+                                }
+                            }
+                            picker2.setValue(indexG);
+                        }
+                        picker2.setMaxValue(19 - minG / 50);
+                        picker2.setMinValue(0);
+                        picker2.setDisplayedValues(pickerVals2);
+                    }
+                }
+            });
+        }
+
         //Restore Selections
         if (cart.cartItems.containsKey(product.name)){
             //Index for kg number picker
@@ -100,8 +186,15 @@ public class WeightPickerDialog {
             @Override
             public void onClick(View v) {
                 //get qty selected in number picker
-                String kg = pickerVals1[picker1.getValue()];
-                String gm = pickerVals2[picker2.getValue()];
+                String kg;
+                kg = pickerVals1[picker1.getValue()];
+                String gm;
+                if (picker2.getDisplayedValues() == pickerVals2) {
+                    gm = pickerVals2[picker2.getValue()];
+                }
+                else {
+                    gm = gramPickers[picker2.getValue()];
+                }
                 kg = kg.replace("kg", "");
                 gm = gm.replace("g", "");
 
@@ -136,6 +229,9 @@ public class WeightPickerDialog {
 
             }
         });
+    }
+
+    private void setupNumberPickers(Product product, DialogWeightPickerBinding weightPickerBinding){
     }
 
     public interface WeightPickerCompleteListener{
