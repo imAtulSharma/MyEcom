@@ -1,4 +1,3 @@
-
 package com.streamliners.myecom;
 
 import android.annotation.SuppressLint;
@@ -61,8 +60,10 @@ public class ProductBinder {
      */
     public void bindWBP(ItemWbProductBinding wbProductBinding, Product product) {
 
-        //Set Title, Subtitle, Quantity and Image in the binding
+        //Set Title in binding
         wbProductBinding.titleProduct.setText(product.name);
+
+        //Set Price in binding
         String price = String.valueOf(product.pricePerKg).replaceFirst("\\.0+$", "");
         wbProductBinding.subtitleProduct.setText("₹ " + price + "/kg");
 
@@ -76,6 +77,7 @@ public class ProductBinder {
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull @NotNull Bitmap resource, @Nullable @org.jetbrains.annotations.Nullable Transition<? super Bitmap> transition) {
+                        //Hide Loader and Show Image
                         wbProductBinding.imgProduct.setImageBitmap(resource);
                         wbProductBinding.imgLoader.setVisibility(View.GONE);
                         wbProductBinding.imgProduct.setVisibility(View.VISIBLE);
@@ -137,13 +139,6 @@ public class ProductBinder {
         vbProductBinding.subtitleProduct.setText(product.variants.size() + " Variants");
 
         // Update Binding accordingly if product is present in cart
-//        int quantity = 0;
-//        for (int i = 0; i<product.variants.size(); i++){
-//            if (cart.cartItems.containsKey(product.name + " " + product.variants.get(i).name)){
-//                quantity += cart.cartItems.get(product.name + " " + product.variants.get(i).name).qty;
-//            }
-//        }
-
         updateVBProductBinding(vbProductBinding, product);
 
         //Set image of the product
@@ -155,6 +150,7 @@ public class ProductBinder {
                     public void onResourceReady(@NonNull @NotNull Bitmap resource, @Nullable @org.jetbrains.annotations.Nullable Transition<? super Bitmap> transition) {
                         vbProductBinding.imgProduct.setImageBitmap(resource);
                         vbProductBinding.imgLoader.setVisibility(View.GONE);
+                        vbProductBinding.imgProduct.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -181,9 +177,11 @@ public class ProductBinder {
             @Override
             public void onClick(View v) {
                 if (vbProductBinding.variants.getVisibility() == View.GONE) {
+                    //Show Variants
                     vbProductBinding.variants.setVisibility(View.VISIBLE);
                     vbProductBinding.btnVariants.setImageResource(R.drawable.ic_baseline_arrow_drop_up_24);
                 } else {
+                    //Hide Variants
                     vbProductBinding.variants.setVisibility(View.GONE);
                     vbProductBinding.btnVariants.setImageResource(R.drawable.ic_drop_down);
                 }
@@ -221,6 +219,11 @@ public class ProductBinder {
         });
     }
 
+    /**
+     * Update data in WBProduct binding according to cart
+     * @param wbProductBinding
+     * @param product
+     */
     private void  updateWBProductBinding(ItemWbProductBinding wbProductBinding, Product product){
         if (!cart.cartItems.containsKey(product.name)) {
             wbProductBinding.grpZeroQuantity.setVisibility(View.VISIBLE);
@@ -235,11 +238,15 @@ public class ProductBinder {
         listener.onCartUpdated();
     }
 
-
+    /**
+     * Update data in VBProduct binding according to cart
+     * @param vbProductBinding
+     * @param product
+     */
     private void updateVBProductBinding(ItemVbProductBinding vbProductBinding, Product product){
         int qty = 0;
 
-        //Add product variants to cart according to selected qty
+        //Get Total Quantity of variants added to cart
         for (int i = 0;i<product.variants.size(); i++){
             if (cart.cartItems.containsKey(product.name + " "+ product.variants.get(i).name))
                 qty += cart.cartItems.get(product.name + " " + product.variants.get(i).name).qty;
@@ -249,7 +256,6 @@ public class ProductBinder {
         if (qty == 0) {
             vbProductBinding.grpNonZeroQuantity.setVisibility(View.GONE);
             vbProductBinding.quantity.setText("0");
-            // Update ItemVariantBinding and set 0 value for each
         }
         else {
             vbProductBinding.grpNonZeroQuantity.setVisibility(View.VISIBLE);

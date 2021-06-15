@@ -80,10 +80,12 @@ public class WeightPickerDialog {
 
         //Restore Selections
         if (cart.cartItems.containsKey(product.name)){
+            //Index for kg number picker
             int kg = (int) cart.cartItems.get(product.name).qty-minKg;
             String gm = String.valueOf(cart.cartItems.get(product.name).qty);
             gm = gm.substring(gm.indexOf( "." )).replace(".","");
             int g = Integer.parseInt(gm);
+            //Index for grams number picker
             int indexG;
             if (gm.length() == 2) indexG = (g*10)/50-minG/50;
             else indexG = (g*100)/50-minG/50;

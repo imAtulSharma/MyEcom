@@ -29,6 +29,7 @@ public class VariantsQtyPickerDialog {
     }
 
     public void show(Product product, VariantsQtyPickerCompleteListener listener){
+        //Inflate dialog binding and set title
         DialogVariantsQtyPickerBinding variantsQtyPickerBinding = DialogVariantsQtyPickerBinding.inflate(inflater);
         variantsQtyPickerBinding.productName.setText(product.name);
 
@@ -58,6 +59,7 @@ public class VariantsQtyPickerDialog {
             ivb.btnInc.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //Increase qty by 1
                     int currQty = Integer.parseInt(ivb.qtyCurrent.getText().toString());
                     if (currQty == 0) {
                         ivb.btnDec.setVisibility(View.VISIBLE);
@@ -71,6 +73,7 @@ public class VariantsQtyPickerDialog {
             ivb.btnDec.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //Decrease qty by 1
                     int currQty = Integer.parseInt(ivb.qtyCurrent.getText().toString())-1;
                     if (currQty == 0) {
                         ivb.btnDec.setVisibility(View.INVISIBLE);
