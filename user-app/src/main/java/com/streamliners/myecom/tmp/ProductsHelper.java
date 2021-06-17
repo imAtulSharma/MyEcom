@@ -40,7 +40,7 @@ public class ProductsHelper {
         Product orange = new Product("Orange", Uri.parse("android.resource://com.streamliners.myecom/drawable/orange").toString(),3,60);
 
         Product sugar = new Product("Sugar", Uri.parse("android.resource://com.streamliners.myecom/drawable/sugar").toString(), new ArrayList<>(
-                Arrays.asList(new Variant("1kg", 800), new Variant("5kg", 500), new Variant("1kg", 800), new Variant("5kg", 500))
+                Arrays.asList(new Variant("1kg", 800), new Variant("5kg", 500), new Variant("1kg", 800), new Variant("5kg", 500), new Variant("1kg", 800), new Variant("5kg", 500))
         ));
 
         Product peach = new Product("Peach",Uri.parse("android.resource://com.streamliners.myecom/drawable/peach").toString(), (float) 1, 80);
