@@ -159,16 +159,6 @@ public class ProductBinder {
                     }
                 });
 
-        //Inflate variant chips in the chip group
-        for (int i = 0; i < product.variants.size(); i++){
-            ChipVariantBinding b = ChipVariantBinding.inflate(inflater);
-            b.getRoot().setClickable(false);
-            String price = String.valueOf(product.variants.get(i).price).replaceFirst("\\.0+$", "");
-            b.getRoot().setText(product.variants.get(i).name + " - ₹" + price);
-            vbProductBinding.variants.addView(b.getRoot());
-        }
-
-
 
         //Set on click listener for buttons of VB product binding
 
@@ -176,14 +166,28 @@ public class ProductBinder {
         vbProductBinding.btnVariants.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Inflate variant chips in the chip group
+
                 if (vbProductBinding.variants.getVisibility() == View.GONE) {
                     //Show Variants
+
+                    for (int i = 0; i < product.variants.size(); i++){
+                        ChipVariantBinding b = ChipVariantBinding.inflate(inflater);
+                        b.getRoot().setClickable(false);
+                        String price = String.valueOf(product.variants.get(i).price).replaceFirst("\\.0+$", "");
+                        b.getRoot().setText(product.variants.get(i).name + " - ₹" + price);
+                        vbProductBinding.variants.addView(b.getRoot());
+                    }
+                    vbProductBinding.cl.setPadding(0,0,0,16);
                     vbProductBinding.variants.setVisibility(View.VISIBLE);
                     vbProductBinding.btnVariants.setImageResource(R.drawable.ic_baseline_arrow_drop_up_24);
                 } else {
+                    vbProductBinding.cl.setPadding(0,0,0,(int) (24*context.getResources().getDisplayMetrics().density + 0.5f));
+
                     //Hide Variants
                     vbProductBinding.variants.setVisibility(View.GONE);
                     vbProductBinding.btnVariants.setImageResource(R.drawable.ic_drop_down);
+                    vbProductBinding.variants.removeAllViews();
                 }
             }
         });
@@ -245,6 +249,12 @@ public class ProductBinder {
      */
     private void updateVBProductBinding(ItemVbProductBinding vbProductBinding, Product product){
         int qty = 0;
+
+        //Close Variant Chips
+        vbProductBinding.cl.setPadding(0,0,0,(int) (24*context.getResources().getDisplayMetrics().density + 0.5f));
+        vbProductBinding.variants.setVisibility(View.GONE);
+        vbProductBinding.btnVariants.setImageResource(R.drawable.ic_drop_down);
+        vbProductBinding.variants.removeAllViews();
 
         //Get Total Quantity of variants added to cart
         for (int i = 0;i<product.variants.size(); i++){

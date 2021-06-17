@@ -10,9 +10,9 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl"
-            android:paddingBottom="24dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="24dp">
 
             <ImageView
                 android:id="@+id/img_product"
@@ -23,7 +23,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/desc_product_img"
                 android:src="@drawable/kiwi"
-                android:visibility="invisible"
+                android:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,9 +31,9 @@
                 android:id="@+id/imgLoader"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:indeterminate="true"
                 android:layout_marginStart="@dimen/margin_default"
                 android:layout_marginTop="@dimen/margin_default"
+                android:indeterminate="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,9 +49,9 @@
                 android:scrollHorizontally="true"
                 android:singleLine="true"
                 android:text="Kiwi"
+                app:layout_constraintEnd_toStartOf="@id/barrier"
                 app:layout_constraintStart_toEndOf="@+id/img_product"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/barrier"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/subtitle_product"
@@ -85,7 +85,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/subtitle_product">
 
-
             </com.google.android.material.chip.ChipGroup>
 
             <ImageView
@@ -117,11 +116,11 @@
             <ImageView
                 android:id="@+id/btn_remove"
                 style="@style/img_btn"
+                android:layout_marginTop="0dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="0dp"
                 android:contentDescription="@string/desc_remove_product"
                 android:src="@drawable/ic_remove"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="0dp"
                 app:layout_constraintBottom_toBottomOf="@+id/quantity"
                 app:layout_constraintEnd_toStartOf="@+id/quantity"
                 app:layout_constraintTop_toTopOf="@+id/quantity" />

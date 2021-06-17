@@ -114,13 +114,7 @@ public class VariantsQtyPickerDialog {
                 //Remove all variants from cart
                 cart.removeAllVariantsOfVariantBasedProduct(product);
 
-                //Update Data in IVBinding
-                for (int i = 0; i<product.variants.size(); i++){
-                    ItemVariantBinding ivb = itemVariantBindings.get(i);
-                    ivb.qtyCurrent.setText("0");
-                    ivb.btnDec.setVisibility(View.INVISIBLE);
-                    ivb.qtyCurrent.setVisibility(View.INVISIBLE);
-                }
+
                 listener.onCompleted();
                 dialog.dismiss();
             }
