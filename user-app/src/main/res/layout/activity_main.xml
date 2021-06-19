@@ -6,31 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/cart_summary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/cart_summary">
-
-        <LinearLayout
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="vertical" />
-
-    </ScrollView>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cart_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/design_default_color_primary"
+        android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -40,9 +31,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_default"
-            android:text="₹ 932"
+            android:text="₹ 0"
             android:textColor="@color/material_on_primary_emphasis_high_type"
-            android:textSize="16sp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/tv_total_items"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -53,9 +44,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_default"
-            android:text="6 Items"
+            android:text="0 Items"
             android:textColor="@color/material_on_primary_emphasis_medium"
-            android:textSize="12sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_total_amount" />
@@ -69,7 +60,7 @@
             android:layout_marginBottom="@dimen/margin_default"
             android:text="@string/title_checkout"
             android:textColor="@color/material_on_primary_emphasis_high_type"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

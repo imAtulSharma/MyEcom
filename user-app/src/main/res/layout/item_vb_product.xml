@@ -10,9 +10,9 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl"
-            android:paddingBottom="16dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="24dp">
 
             <ImageView
                 android:id="@+id/img_product"
@@ -23,15 +23,17 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/desc_product_img"
                 android:src="@drawable/kiwi"
+                android:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ProgressBar
+                android:id="@+id/imgLoader"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:indeterminate="true"
                 android:layout_marginStart="@dimen/margin_default"
                 android:layout_marginTop="@dimen/margin_default"
+                android:indeterminate="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,9 +49,9 @@
                 android:scrollHorizontally="true"
                 android:singleLine="true"
                 android:text="Kiwi"
+                app:layout_constraintEnd_toStartOf="@id/barrier"
                 app:layout_constraintStart_toEndOf="@+id/img_product"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/barrier"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/subtitle_product"
@@ -74,19 +76,18 @@
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/variants"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_default"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:visibility="gone"
+                android:layout_marginEnd="44dp"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/subtitle_product"
-                app:singleSelection="true">
-
-                <include layout="@layout/chip_variant" />
-
-                <include layout="@layout/chip_variant" />
+                app:layout_constraintVertical_bias="0.333">
 
             </com.google.android.material.chip.ChipGroup>
 
@@ -94,7 +95,7 @@
                 android:id="@+id/btn_add"
                 style="@style/img_btn"
                 android:contentDescription="@string/desc_product_add"
-                android:src="@drawable/ic_add"
+                android:src="@drawable/ic_add__1_"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -106,12 +107,12 @@
 
             <TextView
                 android:id="@+id/quantity"
-                android:textStyle="bold"
                 style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_margin="16dp"
-                android:text="3"
+                android:text="0"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_add"
                 app:layout_constraintEnd_toStartOf="@+id/btn_add"
                 app:layout_constraintTop_toTopOf="@+id/btn_add" />
@@ -119,11 +120,11 @@
             <ImageView
                 android:id="@+id/btn_remove"
                 style="@style/img_btn"
+                android:layout_marginTop="0dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="0dp"
                 android:contentDescription="@string/desc_remove_product"
                 android:src="@drawable/ic_remove"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="0dp"
                 app:layout_constraintBottom_toBottomOf="@+id/quantity"
                 app:layout_constraintEnd_toStartOf="@+id/quantity"
                 app:layout_constraintTop_toTopOf="@+id/quantity" />
@@ -132,6 +133,7 @@
                 android:id="@+id/grp_non_zero_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:constraint_referenced_ids="quantity,btn_remove" />
 
             <androidx.constraintlayout.widget.Barrier
