@@ -1,11 +1,12 @@
 package com.streamliners.models;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * represents cart with having cart items as its members
  */
-public class Cart {
+public class Cart implements Serializable {
 
     /**
      * Total amount of all items in cart
@@ -139,8 +140,7 @@ public class Cart {
     }
 
     public boolean isEmpty(){
-        if (numberOfItems == 0) return true;
-        return false;
+        return numberOfItems == 0;
     }
     /**
      * Overriding the {@link Object#toString()} method

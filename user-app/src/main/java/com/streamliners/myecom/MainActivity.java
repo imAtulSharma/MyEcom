@@ -3,6 +3,7 @@ package com.streamliners.myecom;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -21,6 +22,7 @@ import com.streamliners.myecom.databinding.ItemVbProductBinding;
 import com.streamliners.myecom.databinding.ItemWbProductBinding;
 import com.streamliners.myecom.tmp.ProductsHelper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,6 +51,14 @@ public class MainActivity extends AppCompatActivity {
         else mainBinding.cartSummary.setVisibility(View.VISIBLE);
 
         setupAdapter();
+        mainBinding.btnCheckout.setOnClickListener(view -> checkout());
+    }
+
+    private void checkout() {
+        Intent intent = new Intent(this, CheckoutActivity.class);
+        intent.putExtra(CheckoutActivity.KEY_CART, cart);
+
+        startActivity(intent);
     }
 
     private void setupAdapter() {
@@ -72,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         if (cart.isEmpty()) mainBinding.cartSummary.setVisibility(View.GONE);
         else mainBinding.cartSummary.setVisibility(View.VISIBLE);
         mainBinding.tvTotalAmount.setText("₹" + cart.totalAmount);
-        mainBinding.tvTotalItems.setText(cart.numberOfItems + " items");
+        mainBinding.titleTotalItems.setText(cart.numberOfItems + " items");
     }
 
     @Override

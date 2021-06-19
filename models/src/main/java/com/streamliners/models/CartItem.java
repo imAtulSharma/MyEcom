@@ -1,9 +1,11 @@
 package com.streamliners.models;
 
+import java.io.Serializable;
+
 /**
  * Represents Cart Item
  */
-public class CartItem {
+public class CartItem implements Serializable {
 
     /**
      * Name of the item
