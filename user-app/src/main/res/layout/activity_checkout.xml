@@ -43,8 +43,6 @@
                 android:id="@+id/list_items"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="@color/design_default_color_primary"
-                android:dividerPadding="16dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -131,6 +129,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_delivery_info">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/t1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -150,6 +149,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_name">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/t2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
@@ -157,28 +157,32 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/tv_address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Address : Not set"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_contact_no" />
+        <TextView
+            android:id="@+id/tv_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Address : Not set"
+            android:textColor="@color/black"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            app:layout_constraintEnd_toStartOf="@+id/btn_edit_address"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_contact_no" />
 
-    <ImageView
-        android:id="@+id/btn_edit_address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        app:tint="@color/design_default_color_primary"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_address"
-        app:layout_constraintStart_toEndOf="@+id/tv_address"
-        app:layout_constraintTop_toTopOf="@+id/tv_address"
-        app:srcCompat="@drawable/ic_edit"
-        android:contentDescription="@string/desc_address" />
+        <ImageView
+            android:id="@+id/btn_edit_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/desc_address"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_contact_no"
+            app:srcCompat="@drawable/ic_edit"
+            app:tint="@color/design_default_color_primary" />
 
         <Button
             android:id="@+id/btn_place_order"

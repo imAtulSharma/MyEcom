@@ -148,7 +148,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions()
                 .position(currentLocation)
                 .draggable(true)
-                .title("Your Location"));
+                .title(address.getAddressLine(0)));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
 
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
@@ -173,7 +173,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mainBinding.btnSelect.setOnClickListener(view -> {
             Intent intent = new Intent();
-            intent.putExtra("ADDRESS", address.getAddressLine(0));
+            intent.putExtra(CheckoutActivity.KEY_ADDRESS, address.getAddressLine(0));
             setResult(RESULT_OK, intent);
             finish();
         });
