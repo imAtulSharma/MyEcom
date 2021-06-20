@@ -1,28 +1,26 @@
 package com.streamliners.myecom;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.streamliners.models.Cart;
 import com.streamliners.models.Product;
-import com.streamliners.models.Variant;
+import com.streamliners.myecom.controllers.AdapterCallbacksListener;
+import com.streamliners.myecom.controllers.ProductsAdapter;
 import com.streamliners.myecom.databinding.ActivityMainBinding;
-import com.streamliners.myecom.databinding.ItemVbProductBinding;
-import com.streamliners.myecom.databinding.ItemWbProductBinding;
 import com.streamliners.myecom.tmp.ProductsHelper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,15 +47,64 @@ public class MainActivity extends AppCompatActivity {
         else mainBinding.cartSummary.setVisibility(View.VISIBLE);
 
         setupAdapter();
+        mainBinding.btnCheckout.setOnClickListener(view -> checkout());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu
+        getMenuInflater().inflate(R.menu.my_menu, menu);
+
+        // Get the search view
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText);
+                return false;
+            }
+        });
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.my_cart) {
+            checkout();
+            return true;
+        } else if (item.getItemId() == R.id.my_orders) {
+            myOrders();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * To display the previous orders
+     */
+    private void myOrders() {
+        Toast.makeText(this, "Previous Orders", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * To checkout the selected items
+     */
+    private void checkout() {
+        Intent intent = new Intent(this, CheckoutActivity.class);
+        intent.putExtra(CheckoutActivity.KEY_CART, cart);
+
+        startActivity(intent);
     }
 
     private void setupAdapter() {
-        AdapterCallbacksListener listener = new AdapterCallbacksListener() {
-            @Override
-            public void onCartUpdated() {
-                updateCartSummary();
-            }
-        };
+        AdapterCallbacksListener listener = this::updateCartSummary;
 
         adapter = new ProductsAdapter(this
                 , products
@@ -72,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         if (cart.isEmpty()) mainBinding.cartSummary.setVisibility(View.GONE);
         else mainBinding.cartSummary.setVisibility(View.VISIBLE);
         mainBinding.tvTotalAmount.setText("₹" + cart.totalAmount);
-        mainBinding.tvTotalItems.setText(cart.numberOfItems + " items");
+        mainBinding.titleTotalItems.setText(cart.numberOfItems + " items");
     }
 
     @Override

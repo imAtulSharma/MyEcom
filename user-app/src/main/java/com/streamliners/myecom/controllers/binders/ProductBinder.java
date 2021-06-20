@@ -1,4 +1,4 @@
-package com.streamliners.myecom;
+package com.streamliners.myecom.controllers.binders;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,33 +6,25 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.NumberPicker;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.streamliners.models.Cart;
 import com.streamliners.models.Product;
+import com.streamliners.myecom.MainActivity;
+import com.streamliners.myecom.R;
+import com.streamliners.myecom.controllers.AdapterCallbacksListener;
 import com.streamliners.myecom.databinding.ChipVariantBinding;
-import com.streamliners.myecom.databinding.DialogVariantsQtyPickerBinding;
-import com.streamliners.myecom.databinding.DialogWeightPickerBinding;
-import com.streamliners.myecom.databinding.ItemVariantBinding;
 import com.streamliners.myecom.databinding.ItemVbProductBinding;
 import com.streamliners.myecom.databinding.ItemWbProductBinding;
 import com.streamliners.myecom.dialogs.VariantsQtyPickerDialog;
 import com.streamliners.myecom.dialogs.WeightPickerDialog;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ProductBinder {
     Context context;
