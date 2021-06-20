@@ -63,6 +63,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 setResult(RESULT_CANCELED);
                 finish();
             }
+
+            getDeviceLocation();
         }
     }
 
@@ -78,8 +80,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        getDeviceLocation();
     }
 
     // Guard Code
@@ -94,6 +94,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
             );
+        } else {
+            getDeviceLocation();
         }
     }
 
