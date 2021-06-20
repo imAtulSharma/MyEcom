@@ -5,12 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.streamliners.models.Cart;
 import com.streamliners.models.CartItem;
 import com.streamliners.myecom.databinding.ActivityCheckoutBinding;
+import com.streamliners.myecom.databinding.DialogCompleteCheckoutBinding;
 import com.streamliners.myecom.databinding.ItemCartSummaryBinding;
 
 public class CheckoutActivity extends AppCompatActivity {
@@ -41,10 +45,37 @@ public class CheckoutActivity extends AppCompatActivity {
 
         // Setup summary
         setupSummary();
+        setupHideError();
 
         // Adding listeners to the buttons
         mainBinding.btnEditAddress.setOnClickListener(view -> fetchAddress());
         mainBinding.btnPlaceOrder.setOnClickListener(view -> placeOrder());
+    }
+
+    /**
+     * To hide error when text changed
+     */
+    private void setupHideError() {
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mainBinding.tvName.setError(null);
+                mainBinding.tvContactNo.setError(null);
+            }
+        };
+
+        mainBinding.tvName.getEditText().addTextChangedListener(textWatcher);
+        mainBinding.tvContactNo.getEditText().addTextChangedListener(textWatcher);
     }
 
     @Override
@@ -61,11 +92,28 @@ public class CheckoutActivity extends AppCompatActivity {
      * Places the order with the selected items
      */
     private void placeOrder() {
+        String name = mainBinding.tvName.getEditText().getText().toString();
+        String number = mainBinding.tvContactNo.getEditText().getText().toString();
+
+        // Guard code
         if (address.isEmpty()) {
             Toast.makeText(this, "Address not selected", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, address, Toast.LENGTH_SHORT).show();
+            return;
+        } else if (name.isEmpty()) {
+            mainBinding.tvName.setError("Enter name");
+            return;
+        } else if (number.isEmpty()) {
+            mainBinding.tvContactNo.setError("Enter number");
+            return;
+        } else if (number.length() < 10) {
+            mainBinding.tvContactNo.setError("Enter valid number");
+            return;
         }
+
+        DialogCompleteCheckoutBinding binding = DialogCompleteCheckoutBinding.inflate(inflater);
+        new MaterialAlertDialogBuilder(this)
+                .setView(binding.getRoot())
+                .show();
     }
 
     /**
