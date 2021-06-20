@@ -1,4 +1,4 @@
-package com.streamliners.myecom;
+package com.streamliners.myecom.controllers;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.streamliners.models.Cart;
 import com.streamliners.models.Product;
 import com.streamliners.models.ProductType;
+import com.streamliners.myecom.controllers.AdapterCallbacksListener;
+import com.streamliners.myecom.controllers.binders.ProductBinder;
 import com.streamliners.myecom.databinding.ItemVbProductBinding;
 import com.streamliners.myecom.databinding.ItemWbProductBinding;
-import com.streamliners.myecom.viewholders.VBProductViewHolder;
-import com.streamliners.myecom.viewholders.WBProductViewHolder;
+import com.streamliners.myecom.controllers.viewholders.VBProductViewHolder;
+import com.streamliners.myecom.controllers.viewholders.WBProductViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 

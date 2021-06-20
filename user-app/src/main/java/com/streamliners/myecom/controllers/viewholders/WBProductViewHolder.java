@@ -1,4 +1,4 @@
-package com.streamliners.myecom.viewholders;
+package com.streamliners.myecom.controllers.viewholders;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;

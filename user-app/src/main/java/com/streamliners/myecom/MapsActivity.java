@@ -1,10 +1,5 @@
 package com.streamliners.myecom;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
@@ -12,6 +7,11 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -22,7 +22,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.streamliners.myecom.databinding.ActivityMapsBinding;
 
@@ -102,7 +101,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * To get the current location of the device
-     * @return location in latitude and longitude form
      */
     private void getDeviceLocation() {
         final LatLng[] currentLocation = new LatLng[1];
@@ -111,23 +109,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(this);
             Task<Location> locationResult = client.getLastLocation();
-            locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                @Override
-                public void onComplete(@NonNull Task<Location> task) {
-                    if (task.isSuccessful()) {
-                        // Set the map's camera position to the current location of the device.
-                        Location lastKnownLocation = task.getResult();
-                        if (lastKnownLocation != null) {
-                            currentLocation[0] = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation[0], DEFAULT_ZOOM));
-                        }
-                     } else {
-                        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            locationResult.addOnCompleteListener(this, task -> {
+                if (task.isSuccessful()) {
+                    // Set the map's camera position to the current location of the device.
+                    Location lastKnownLocation = task.getResult();
+                    if (lastKnownLocation != null) {
+                        currentLocation[0] = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation[0], DEFAULT_ZOOM));
                     }
-
-                    // To setup the map
-                    setupMap(currentLocation[0]);
+                 } else {
+                    mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 }
+
+                // To setup the map
+                setupMap(currentLocation[0]);
             });
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage(), e);

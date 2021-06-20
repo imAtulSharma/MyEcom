@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.streamliners.models.Cart;
 import com.streamliners.models.Product;
+import com.streamliners.myecom.controllers.AdapterCallbacksListener;
+import com.streamliners.myecom.controllers.ProductsAdapter;
 import com.streamliners.myecom.databinding.ActivityMainBinding;
 import com.streamliners.myecom.tmp.ProductsHelper;
 
