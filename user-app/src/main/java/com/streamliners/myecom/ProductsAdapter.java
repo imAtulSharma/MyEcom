@@ -17,23 +17,27 @@ import com.streamliners.myecom.viewholders.WBProductViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Context context;
-    private List<Product> products;
-    private ProductBinder productBinder;
+    private final Context context;
+    private final List<Product> products;
+    // For the visible items
+    private final List<Product> visibleProducts;
+    private final ProductBinder productBinder;
 
     public ProductsAdapter(Context context, List<Product> products, Cart cart, AdapterCallbacksListener listener){
         this.context = context;
         this.products = products;
-        productBinder = new ProductBinder(context, cart, listener);
+        this.visibleProducts  = new ArrayList<>(products);
+        this.productBinder = new ProductBinder(context, cart, listener);
     }
 
     @Override
     public int getItemViewType(int position) {
-        return products.get(position).type;
+        return visibleProducts.get(position).type;
     }
 
     @NonNull
@@ -59,7 +63,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull RecyclerView.ViewHolder holder, int position) {
-        Product product = products.get(position);
+        Product product = visibleProducts.get(position);
 
         if(holder instanceof WBProductViewHolder){
             productBinder.bindWBP(((WBProductViewHolder) holder).b, product);
@@ -70,6 +74,32 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemCount() {
-        return products.size();
+        return visibleProducts.size();
+    }
+
+    /**
+     * To filter the visible list
+     * @param query query for the search
+     */
+    public void filter(String query) {
+        // Clear the list
+        visibleProducts.clear();
+
+        // Check for query given
+        if (query.trim().isEmpty()) {
+            // Add all the products of the main list into visible list
+            visibleProducts.addAll(products);
+        } else {
+            // Filter according to the query
+            for (Product product :
+                    products) {
+                if (product.name.toLowerCase().contains(query.toLowerCase())) {
+                    visibleProducts.add(product);
+                }
+            }
+        }
+
+        // Refreshing the list
+        notifyDataSetChanged();
     }
 }
