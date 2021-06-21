@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
         mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
-        showUserDetails();
 
         mPrefs = getPreferences(MODE_PRIVATE);
 
@@ -52,17 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         setupAdapter();
         mainBinding.cartSummary.setOnClickListener(view -> checkout());
-    }
-
-    private void showUserDetails() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (user != null) {
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle("User")
-                    .setMessage(new Gson().toJson(user))
-                    .show();
-        }
     }
 
     @Override
@@ -159,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String json = gson.toJson(cart);
         prefsEditor.putString(Constants.cart, json);
+        prefsEditor.putInt(SplashActivity.KEY_LOGIN, 1);
         prefsEditor.apply();
         prefsEditor.commit();
     }
