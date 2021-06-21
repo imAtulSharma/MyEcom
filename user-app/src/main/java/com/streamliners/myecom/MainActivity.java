@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         else mainBinding.cartSummary.setVisibility(View.VISIBLE);
 
         setupAdapter();
-        mainBinding.btnCheckout.setOnClickListener(view -> checkout());
+        mainBinding.cartSummary.setOnClickListener(view -> checkout());
     }
 
     @Override
@@ -104,7 +104,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupAdapter() {
-        AdapterCallbacksListener listener = this::updateCartSummary;
+        AdapterCallbacksListener listener = new AdapterCallbacksListener() {
+            @Override
+            public void onCartUpdated() {
+                updateCartSummary();
+            }
+
+            @Override
+            public void onSizeChanges(int size) {
+                if (size == 0) {
+                    mainBinding.tvNoProducts.setVisibility(View.VISIBLE);
+                } else {
+                    mainBinding.tvNoProducts.setVisibility(View.INVISIBLE);
+                }
+            }
+        };
 
         adapter = new ProductsAdapter(this
                 , products
