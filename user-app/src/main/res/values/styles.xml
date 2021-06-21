@@ -36,4 +36,13 @@
         <item name="cornerSize">16dp</item>
     </style>
 
+    <!--For splash screen theme-->
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="colorPrimary">@color/design_default_color_primary</item>
+        <item name="colorPrimaryDark">@color/design_default_color_primary</item>
+        <item name="colorAccent">@color/design_default_color_primary</item>
+        <item name="android:statusBarColor">@color/design_default_color_primary</item>
+    </style>
+
 </resources>
