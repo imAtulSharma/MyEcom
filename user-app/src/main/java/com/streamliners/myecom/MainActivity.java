@@ -13,6 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.streamliners.models.Cart;
 import com.streamliners.models.Product;
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
+        showUserDetails();
 
         mPrefs = getPreferences(MODE_PRIVATE);
 
@@ -48,6 +52,17 @@ public class MainActivity extends AppCompatActivity {
 
         setupAdapter();
         mainBinding.cartSummary.setOnClickListener(view -> checkout());
+    }
+
+    private void showUserDetails() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("User")
+                    .setMessage(new Gson().toJson(user))
+                    .show();
+        }
     }
 
     @Override
