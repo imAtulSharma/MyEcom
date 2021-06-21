@@ -29,11 +29,13 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     // For the visible items
     private final List<Product> visibleProducts;
     private final ProductBinder productBinder;
+    private final AdapterCallbacksListener mListener;
 
     public ProductsAdapter(Context context, List<Product> products, Cart cart, AdapterCallbacksListener listener){
         this.context = context;
         this.products = products;
         this.visibleProducts  = new ArrayList<>(products);
+        this.mListener = listener;
         this.productBinder = new ProductBinder(context, cart, listener);
     }
 
@@ -76,6 +78,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemCount() {
+        mListener.onSizeChanges(visibleProducts.size());
         return visibleProducts.size();
     }
 
