@@ -13,6 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.streamliners.models.Cart;
 import com.streamliners.models.Product;
@@ -144,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String json = gson.toJson(cart);
         prefsEditor.putString(Constants.cart, json);
+        prefsEditor.putInt(SplashActivity.KEY_LOGIN, 1);
         prefsEditor.apply();
         prefsEditor.commit();
     }
