@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">admin-app</string>
+    <string name="title_checkout">CHECKOUT</string>
+    <string name="desc_product_add">To add product</string>
+    <string name="desc_product_img">product image</string>
+    <string name="desc_remove_product">To remove product</string>
+    <string name="desc_variants_drop_down">To see variants available</string>
+    <string name="qty_init">0</string>
+    <string name="remove_all">REMOVE ALL</string>
+    <string name="save">SAVE</string>
+    <string name="product_name">Product Name</string>
+    <string name="title_cart_summary">CART SUMMARY</string>
+    <string name="title_total">TOTAL</string>
+    <string name="title_delivery_info">DELIVERY INFO</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_contact_no">Contact No.</string>
+    <string name="title_place_order">Place Order</string>
+    <string name="desc_address">Button for address edition</string>
+    <string name="title_search">Search</string>
+    <string name="title_buy">Buy</string>
+    <string name="title_my_cart">My Cart</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="drag_and_drop">Drag and Drop</string>
+    <string name="sort">Sort</string>
+</resources>

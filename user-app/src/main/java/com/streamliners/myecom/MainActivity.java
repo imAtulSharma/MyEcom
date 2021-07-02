@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         setupAdapter();
         mainBinding.cartSummary.setOnClickListener(view -> checkout());
+        if (cart.cartItems.isEmpty()) mainBinding.cartSummary.setVisibility(View.GONE);
     }
 
     @Override
@@ -80,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.my_cart) {
+            if (cart.cartItems.isEmpty()){
+                Toast.makeText(this, "Add some items to cart first!", Toast.LENGTH_SHORT).show();
+            }
             checkout();
             return true;
         } else if (item.getItemId() == R.id.my_orders) {

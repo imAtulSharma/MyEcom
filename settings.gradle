@@ -1,3 +1,4 @@
 rootProject.name = "MyEcom"
 include ':user-app'
 include ':models'
+include ':admin-app'

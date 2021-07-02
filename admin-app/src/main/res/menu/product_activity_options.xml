@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <item android:id="@+id/drag_drop"
+            android:title="@string/drag_and_drop"
+            android:icon="@drawable/ic_baseline_drag_handle_24"
+            app:showAsAction="ifRoom"/>
+
+        <item android:id="@+id/sort_products"
+            android:title="@string/sort"
+            android:icon="@drawable/ic_baseline_sort_by_alpha_24"
+            app:showAsAction="always"/>
+
+        <item android:id="@+id/search"
+            android:title="@string/title_search"
+            android:icon="@drawable/ic_search"
+            app:showAsAction="always"
+            app:actionViewClass="androidx.appcompat.widget.SearchView"/>
+
+</menu>
