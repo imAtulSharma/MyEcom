@@ -7,10 +7,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.streamliners.models.Cart;
-import com.streamliners.models.Product;
-import com.streamliners.models.ProductType;
-import com.streamliners.myecom.controllers.AdapterCallbacksListener;
+import com.streamliners.models.models.Cart;
+import com.streamliners.models.models.Product;
+import com.streamliners.models.models.ProductType;
 import com.streamliners.myecom.controllers.binders.ProductBinder;
 import com.streamliners.myecom.databinding.ItemVbProductBinding;
 import com.streamliners.myecom.databinding.ItemWbProductBinding;

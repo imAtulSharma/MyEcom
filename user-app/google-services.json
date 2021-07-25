@@ -1,0 +1,92 @@
+{
+  "project_info": {
+    "project_number": "995217025385",
+    "project_id": "myecom-61afe",
+    "storage_bucket": "myecom-61afe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:995217025385:android:daf3f8f31345dde96eb5f8",
+        "android_client_info": {
+          "package_name": "com.streamliners.admin_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "995217025385-jl2m0u4d1518btgi7hhnd44g5a94121p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.streamliners.admin_app",
+            "certificate_hash": "bc297aeee2897702557b89705d829b0b06db5740"
+          }
+        },
+        {
+          "client_id": "995217025385-ak08mvui08chpmk728lsjjqnan3m107v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfrrDxO8FIt3LJB25czUXaFBaBSeDyVnw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "995217025385-ak08mvui08chpmk728lsjjqnan3m107v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:995217025385:android:f75c13b46b8e57d86eb5f8",
+        "android_client_info": {
+          "package_name": "com.streamliners.myecom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "995217025385-6p32c9dec7klrppup9vkd9j5v0t5v9li.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.streamliners.myecom",
+            "certificate_hash": "bc297aeee2897702557b89705d829b0b06db5740"
+          }
+        },
+        {
+          "client_id": "995217025385-7dup5u5ijsd981ft660b3mo5365g1l4h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.streamliners.myecom",
+            "certificate_hash": "07fc9e9174d278af761e9add46f4cc75d31f1bf1"
+          }
+        },
+        {
+          "client_id": "995217025385-ak08mvui08chpmk728lsjjqnan3m107v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfrrDxO8FIt3LJB25czUXaFBaBSeDyVnw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "995217025385-ak08mvui08chpmk728lsjjqnan3m107v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

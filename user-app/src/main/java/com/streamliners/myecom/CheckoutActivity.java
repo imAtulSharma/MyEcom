@@ -12,8 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.streamliners.models.Cart;
-import com.streamliners.models.CartItem;
+import com.streamliners.models.models.Cart;
+import com.streamliners.models.models.CartItem;
 import com.streamliners.myecom.databinding.ActivityCheckoutBinding;
 import com.streamliners.myecom.databinding.DialogCompleteCheckoutBinding;
 import com.streamliners.myecom.databinding.ItemCartSummaryBinding;

@@ -1,4 +1,4 @@
-package com.streamliners.models;
+package com.streamliners.models.models;
 
 /**
  * Represents type of product for weight based and variant based

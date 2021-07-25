@@ -7,8 +7,8 @@ import android.view.View;
 import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.streamliners.models.Cart;
-import com.streamliners.models.Product;
+import com.streamliners.models.models.Cart;
+import com.streamliners.models.models.Product;
 import com.streamliners.myecom.MainActivity;
 import com.streamliners.myecom.R;
 import com.streamliners.myecom.databinding.DialogVariantsQtyPickerBinding;

@@ -1,4 +1,4 @@
-package com.streamliners.models;
+package com.streamliners.models.models;
 
 /**
  * Represents a variant
@@ -23,6 +23,10 @@ public class Variant {
     public Variant(String name, float price) {
         this.name = name;
         this.price = price;
+    }
+
+    public Variant(){
+
     }
 
     /**

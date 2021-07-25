@@ -1,4 +1,4 @@
-package com.streamliners.models;
+package com.streamliners.models.models;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import java.util.List;
  * Represents a product
  */
 public class Product {
+    public int position;
     /**
      * Name and image URL of the product
      */
@@ -28,6 +29,9 @@ public class Product {
      */
     public float minQty, pricePerKg;
 
+    public Product(){
+
+    }
     /**
      * Initialize the variant based product
      * @param name      name of the product

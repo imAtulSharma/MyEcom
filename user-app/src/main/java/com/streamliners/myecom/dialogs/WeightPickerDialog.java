@@ -1,6 +1,5 @@
 package com.streamliners.myecom.dialogs;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +9,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.streamliners.models.Cart;
-import com.streamliners.models.Product;
+import com.streamliners.models.models.Cart;
+import com.streamliners.models.models.Product;
 import com.streamliners.myecom.MainActivity;
 import com.streamliners.myecom.R;
 import com.streamliners.myecom.databinding.DialogWeightPickerBinding;
-
-import java.util.List;
 
 public class WeightPickerDialog {
     private final LayoutInflater inflater;

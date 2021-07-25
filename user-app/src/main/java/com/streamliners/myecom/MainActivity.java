@@ -13,17 +13,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
-import com.streamliners.models.Cart;
-import com.streamliners.models.Product;
+import com.streamliners.models.listeners.OnCompleteListener;
+import com.streamliners.models.models.Cart;
+import com.streamliners.models.models.Product;
 import com.streamliners.myecom.controllers.AdapterCallbacksListener;
 import com.streamliners.myecom.controllers.ProductsAdapter;
 import com.streamliners.myecom.databinding.ActivityMainBinding;
 import com.streamliners.myecom.tmp.ProductsHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
 
@@ -44,12 +42,24 @@ public class MainActivity extends AppCompatActivity {
 
         if (mPrefs.contains(Constants.cart)) getDataFromSharedPrefs();
 
-        products = new ProductsHelper().getProducts();
+        products = new ArrayList<>();
+        ProductsHelper helper = new ProductsHelper();
+        helper.getData(products, new OnCompleteListener<List<Product>>() {
+            @Override
+            public void onCompleted(List<Product> products) {
+                mainBinding.progressBar.setVisibility(View.GONE);
+                if (products.isEmpty()) mainBinding.tvNoProducts.setVisibility(View.GONE);
+                setupAdapter();
+            }
 
+            @Override
+            public void onFailed(String error) {
+
+            }
+        });
         if (cart.isEmpty()) mainBinding.cartSummary.setVisibility(View.GONE);
         else mainBinding.cartSummary.setVisibility(View.VISIBLE);
 
-        setupAdapter();
         mainBinding.cartSummary.setOnClickListener(view -> checkout());
         if (cart.cartItems.isEmpty()) mainBinding.cartSummary.setVisibility(View.GONE);
     }
@@ -83,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.my_cart) {
             if (cart.cartItems.isEmpty()){
                 Toast.makeText(this, "Add some items to cart first!", Toast.LENGTH_SHORT).show();
+                return false;
             }
             checkout();
             return true;
@@ -160,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String json = mPrefs.getString(Constants.cart, "");
         cart = gson.fromJson(json, Cart.class);
+
         updateCartSummary();
     }
 }

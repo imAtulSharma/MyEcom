@@ -1,4 +1,4 @@
-package com.streamliners.models;
+package com.streamliners.models.models;
 
 import java.io.Serializable;
 
