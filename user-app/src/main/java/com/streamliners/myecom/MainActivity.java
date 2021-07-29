@@ -13,15 +13,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.streamliners.models.listeners.OnCompleteListener;
 import com.streamliners.models.models.Cart;
 import com.streamliners.models.models.Product;
 import com.streamliners.myecom.controllers.AdapterCallbacksListener;
 import com.streamliners.myecom.controllers.ProductsAdapter;
 import com.streamliners.myecom.databinding.ActivityMainBinding;
+import com.streamliners.myecom.messaging.FCMSender;
+import com.streamliners.myecom.messaging.MessageBuilder;
+import com.streamliners.myecom.messaging.RemoteConfigHelper;
 import com.streamliners.myecom.tmp.ProductsHelper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private ProductsAdapter adapter;
     private Cart cart = new Cart();
     List<Product> products;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(mainBinding.getRoot());
 
         mPrefs = getPreferences(MODE_PRIVATE);
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
 
         if (mPrefs.contains(Constants.cart)) getDataFromSharedPrefs();
 
@@ -62,6 +74,64 @@ public class MainActivity extends AppCompatActivity {
 
         mainBinding.cartSummary.setOnClickListener(view -> checkout());
         if (cart.cartItems.isEmpty()) mainBinding.cartSummary.setVisibility(View.GONE);
+
+        sendNotification();
+    }
+
+    /**
+     * Starts the notification process to send it
+     */
+    private void sendNotification() {
+        Toast.makeText(this, "Begins", Toast.LENGTH_SHORT).show();
+
+        // Getting the authentication key first
+        RemoteConfigHelper.getAuthenticationKey(MainActivity.this, new RemoteConfigHelper.OnRemoteConfigFetchedListener() {
+            @Override
+            public void onSuccessfullyFetched(String key) {
+                // Creating the message
+                String message = MessageBuilder.buildNewOrderMessage("Atul", 100, 9999);
+
+                // Sending the message and on complete displaying the appropriate dialogs
+                new FCMSender().send(message, key, new Callback() {
+                    @Override
+                    public void onFailure(Request request, IOException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showDialog("Failure!", "Error: "+ e.toString());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Response response) throws IOException {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showDialog("Success!", "Notification send");
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            public void onErrorOccurred(String error) {
+                showDialog("Failure!", "Error: "+ error);
+            }
+        });
+    }
+
+    /**
+     * Show the dialog
+     * @param title title of the dialog
+     * @param message message in the dialog
+     */
+    private void showDialog(String title, String message) {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .show();
     }
 
     @Override

@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "995217025385-64pn7pkh7r7m3mac3pu5qi8ehghk194r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.streamliners.admin_app",
+            "certificate_hash": "07fc9e9174d278af761e9add46f4cc75d31f1bf1"
+          }
+        },
+        {
           "client_id": "995217025385-jl2m0u4d1518btgi7hhnd44g5a94121p.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
