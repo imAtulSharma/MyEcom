@@ -6,10 +6,12 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.streamliners.models.listeners.OnCompleteListener;
 import com.streamliners.models.models.Product;
 import com.streamliners.models.models.Variant;
@@ -113,19 +115,32 @@ public class FirebaseHelper {
     }
 
     public void placeOrder(Order order, OnCompleteListener<Order> listener) {
-        FirebaseFirestore db;
-        db = FirebaseFirestore.getInstance();
-        db.collection("orders").add(order)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        // Firstly fetching the user's device token and then sending the notification
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new com.google.android.gms.tasks.OnCompleteListener<String>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        listener.onCompleted(order);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull @NotNull Exception e) {
-                        listener.onFailed(e.toString());
+                    public void onComplete(@NonNull @NotNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            listener.onFailed(task.getException().toString());
+                            return;
+                        }
+
+                        order.userDeviceToken = task.getResult();
+                        FirebaseFirestore db;
+                        db = FirebaseFirestore.getInstance();
+                        db.collection("orders").add(order)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        listener.onCompleted(order);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull @NotNull Exception e) {
+                                        listener.onFailed(e.toString());
+                                    }
+                                });
                     }
                 });
     }

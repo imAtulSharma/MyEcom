@@ -124,7 +124,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
         saveDataInSharedPreferences();
 
-        firebaseHelper.placeOrder(new Order(cart, name, number, address, "Device token", new LatLng(latLng[0], latLng[1])),
+        firebaseHelper.placeOrder(new Order(cart, name, number, address, null, new LatLng(latLng[0], latLng[1])),
                 new OnCompleteListener<Order>() {
                     @Override
                     public void onCompleted(Order order) {
@@ -174,6 +174,7 @@ public class CheckoutActivity extends AppCompatActivity {
                                 DialogCompleteCheckoutBinding binding = DialogCompleteCheckoutBinding.inflate(inflater);
                                 new MaterialAlertDialogBuilder(CheckoutActivity.this)
                                         .setView(binding.getRoot())
+                                        .setCancelable(false)
                                         .show();
                                 binding.btnGoToOrders.setOnClickListener(view -> {
                                     startActivity(new Intent(CheckoutActivity.this, OrdersActivity.class));
