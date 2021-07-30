@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyEcom">
-        <activity android:name=".OrdersActivity"></activity>
+        <activity android:name=".OrdersActivity"
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
@@ -44,7 +45,8 @@
         <activity
             android:name=".CheckoutActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"
+            android:launchMode="singleInstance"/>
     </application>
 
 </manifest>

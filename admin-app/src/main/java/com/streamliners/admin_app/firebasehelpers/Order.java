@@ -1,4 +1,4 @@
-package com.streamliners.myecom.tmp;
+package com.streamliners.admin_app.firebasehelpers;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.Timestamp;

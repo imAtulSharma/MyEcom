@@ -19,6 +19,12 @@ public class CartItem implements Serializable {
     public float unitPrice, qty;
 
     /**
+     * No argument constructor
+     */
+    public CartItem() {
+    }
+
+    /**
      * Initialize cart item
      * @param name name of the product
      * @param unitPrice price of the product of unit quantity

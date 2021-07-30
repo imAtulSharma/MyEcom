@@ -21,8 +21,13 @@ public class MainActivity extends AppCompatActivity {
         FirebaseMessaging.getInstance().subscribeToTopic("admin");
     }
 
-    public void openProducts(View view) {
+    public void openProductsActivity(View view) {
         Intent intent = new Intent(this, ProductsActivity.class);
+        startActivity(intent);
+    }
+
+    public void openOrdersActivity(View view) {
+        Intent intent = new Intent(this, OrdersActivity.class);
         startActivity(intent);
     }
 }

@@ -25,9 +25,10 @@
 
     <string name="waiting_state">WAITING</string>
     <string name="cancelled_state">CANCELLED</string>
-    <string name="accepted_status">ACCEPTED</string>
-    <string name="dispatched_status">DISPATCHED</string>
-    <string name="delivered_status">DELIVERED</string>
+    <string name="accepted_state">ACCEPTED</string>
+    <string name="dispatched_state">DISPATCHED</string>
+    <string name="delivered_state">DELIVERED</string>
+    <string name="declined_state">DECLINED</string>
 
     <string name="accept">ACCEPT</string>
     <string name="decline">DECLINE</string>
