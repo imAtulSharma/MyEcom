@@ -28,7 +28,7 @@ import com.streamliners.myecom.databinding.ActivityMainBinding;
 import com.streamliners.myecom.messaging.FCMSender;
 import com.streamliners.myecom.messaging.MessageBuilder;
 import com.streamliners.myecom.messaging.RemoteConfigHelper;
-import com.streamliners.myecom.tmp.ProductsHelper;
+import com.streamliners.myecom.tmp.FirebaseHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         if (mPrefs.contains(Constants.cart)) getDataFromSharedPrefs();
 
         products = new ArrayList<>();
-        ProductsHelper helper = new ProductsHelper();
+        FirebaseHelper helper = new FirebaseHelper();
         helper.getData(products, new OnCompleteListener<List<Product>>() {
             @Override
             public void onCompleted(List<Product> products) {
@@ -74,64 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
         mainBinding.cartSummary.setOnClickListener(view -> checkout());
         if (cart.cartItems.isEmpty()) mainBinding.cartSummary.setVisibility(View.GONE);
-
-        sendNotification();
-    }
-
-    /**
-     * Starts the notification process to send it
-     */
-    private void sendNotification() {
-        Toast.makeText(this, "Begins", Toast.LENGTH_SHORT).show();
-
-        // Getting the authentication key first
-        RemoteConfigHelper.getAuthenticationKey(MainActivity.this, new RemoteConfigHelper.OnRemoteConfigFetchedListener() {
-            @Override
-            public void onSuccessfullyFetched(String key) {
-                // Creating the message
-                String message = MessageBuilder.buildNewOrderMessage("Atul", 100, 9999);
-
-                // Sending the message and on complete displaying the appropriate dialogs
-                new FCMSender().send(message, key, new Callback() {
-                    @Override
-                    public void onFailure(Request request, IOException e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showDialog("Failure!", "Error: "+ e.toString());
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onResponse(Response response) throws IOException {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showDialog("Success!", "Notification send");
-                            }
-                        });
-                    }
-                });
-            }
-
-            @Override
-            public void onErrorOccurred(String error) {
-                showDialog("Failure!", "Error: "+ error);
-            }
-        });
-    }
-
-    /**
-     * Show the dialog
-     * @param title title of the dialog
-     * @param message message in the dialog
-     */
-    private void showDialog(String title, String message) {
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(title)
-                .setMessage(message)
-                .show();
     }
 
     @Override
@@ -178,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
      * To display the previous orders
      */
     private void myOrders() {
-        Toast.makeText(this, "Previous Orders", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(MainActivity.this, OrdersActivity.class));
     }
 
     /**

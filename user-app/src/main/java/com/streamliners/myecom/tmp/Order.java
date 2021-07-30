@@ -1,12 +1,11 @@
 package com.streamliners.myecom.tmp;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.Timestamp;
 import com.streamliners.models.models.Cart;
 import com.streamliners.models.models.CartItem;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Represents order class
@@ -33,6 +32,8 @@ public class Order {
     public LatLng userCoordinates;
 
     public Order(Cart cart, String userName, String userPhoneNo, String userAddress, String userDeviceToken, LatLng userCoordinates) {
+        this.createdTime = com.google.firebase.Timestamp.now();
+        this.status = OrderStatus.WAITING;
         this.cartItems = cart.cartItems;
         this.noOfItems = cart.numberOfItems;
         this.subTotal = cart.totalAmount;

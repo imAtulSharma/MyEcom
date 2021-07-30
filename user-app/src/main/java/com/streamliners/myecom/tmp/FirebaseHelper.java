@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ProductsHelper {
+public class FirebaseHelper {
     public List<Product> getProducts(){
         List<Product> products = new ArrayList<>();
 
@@ -108,6 +108,24 @@ public class ProductsHelper {
                                 listener.onCompleted(products);
                             }
                         }
+                    }
+                });
+    }
+
+    public void placeOrder(Order order, OnCompleteListener<Order> listener) {
+        FirebaseFirestore db;
+        db = FirebaseFirestore.getInstance();
+        db.collection("orders").add(order)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        listener.onCompleted(order);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception e) {
+                        listener.onFailed(e.toString());
                     }
                 });
     }
