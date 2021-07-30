@@ -28,4 +28,16 @@
     <string name="select">Select</string>
     <string name="confirm">Confirm</string>
     <string name="select_again">Select Again</string>
+
+    <string name="waiting_state">WAITING</string>
+    <string name="cancelled_state">CANCELLED</string>
+    <string name="accepted_status">ACCEPTED</string>
+    <string name="dispatched_status">DISPATCHED</string>
+    <string name="delivered_status">DELIVERED</string>
+
+    <string name="accept">ACCEPT</string>
+    <string name="decline">DECLINE</string>
+    <string name="total">TOTAL</string>
+    <string name="close">CLOSE</string>
+    <string name="cancel">Cancel</string>
 </resources>
