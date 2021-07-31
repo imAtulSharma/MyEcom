@@ -52,6 +52,8 @@ public class CheckoutActivity extends AppCompatActivity {
     // Preferences
     private SharedPreferences preferences;
 
+    private MyApplication myApplication;
+
     // Details of the user
     private String address = "";
     private String name = "";
@@ -72,6 +74,8 @@ public class CheckoutActivity extends AppCompatActivity {
         // Initializing the binding and set to the activity
         mainBinding = ActivityCheckoutBinding.inflate(inflater);
         setContentView(mainBinding.getRoot());
+
+        myApplication = new MyApplication(this);
 
         // Getting cart from intent
         cart = (Cart) getIntent().getExtras().getSerializable(KEY_CART);
@@ -125,6 +129,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
         saveDataInSharedPreferences();
 
+        myApplication.showDialog();
+
         firebaseHelper.placeOrder(new Order(cart, name, number, address, null, new LatLng(latLng[0], latLng[1])),
                 new OnCompleteListener<Order>() {
                     @Override
@@ -146,8 +152,6 @@ public class CheckoutActivity extends AppCompatActivity {
      * Starts the notification process to send it
      */
     private void sendNotification(String userName, int noOfItems, int total) {
-        Toast.makeText(this, "Begins", Toast.LENGTH_SHORT).show();
-
         // Getting the authentication key first
         RemoteConfigHelper.getAuthenticationKey(CheckoutActivity.this, new RemoteConfigHelper.OnRemoteConfigFetchedListener() {
             @Override
@@ -172,6 +176,7 @@ public class CheckoutActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                myApplication.hideDialog();
                                 DialogCompleteCheckoutBinding binding = DialogCompleteCheckoutBinding.inflate(inflater);
                                  AlertDialog dialog = new MaterialAlertDialogBuilder(CheckoutActivity.this)
                                         .setView(binding.getRoot())

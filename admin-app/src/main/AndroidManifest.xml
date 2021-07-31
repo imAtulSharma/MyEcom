@@ -11,8 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyEcom">
-        <activity android:name=".OrdersActivity" />
-        <activity android:name=".ProductsActivity" />
+        <activity android:name=".OrdersActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".ProductsActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

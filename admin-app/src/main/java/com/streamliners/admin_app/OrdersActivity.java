@@ -37,6 +37,8 @@ public class OrdersActivity extends AppCompatActivity {
         mainBinding = ActivityOrdersBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
 
+        setTitle("Orders");
+
         setupRecyclerView();
         fetchOrders();
     }
@@ -129,8 +131,6 @@ public class OrdersActivity extends AppCompatActivity {
      * Starts the notification process to send it
      */
     private void sendNotification(String token, String status) {
-        Toast.makeText(this, "Begins", Toast.LENGTH_SHORT).show();
-
         // Getting the authentication key first
         RemoteConfigHelper.getAuthenticationKey(OrdersActivity.this, new RemoteConfigHelper.OnRemoteConfigFetchedListener() {
             @Override
