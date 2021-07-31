@@ -125,8 +125,6 @@ public class OrdersActivity extends AppCompatActivity {
         mainBinding.list.setAdapter(adapter);
     }
 
-
-
     /**
      * Starts the notification process to send it
      */
