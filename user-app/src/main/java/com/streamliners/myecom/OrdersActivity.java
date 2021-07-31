@@ -1,23 +1,29 @@
-package com.streamliners.admin_app;
+package com.streamliners.myecom;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.streamliners.admin_app.controllers.OrdersAdapter;
-import com.streamliners.admin_app.databinding.ActivityOrdersBinding;
-import com.streamliners.admin_app.firebasehelpers.Order;
-import com.streamliners.admin_app.firebasehelpers.OrdersHelper;
-import com.streamliners.admin_app.messaging.FCMSender;
-import com.streamliners.admin_app.messaging.MessageBuilder;
-import com.streamliners.admin_app.messaging.RemoteConfigHelper;
+import com.streamliners.models.listeners.OnCompleteListener;
+import com.streamliners.myecom.controllers.OrdersAdapter;
+import com.streamliners.myecom.databinding.ActivityOrdersBinding;
+import com.streamliners.myecom.databinding.DialogCompleteCheckoutBinding;
+import com.streamliners.myecom.messaging.FCMSender;
+import com.streamliners.myecom.messaging.MessageBuilder;
+import com.streamliners.myecom.messaging.RemoteConfigHelper;
+import com.streamliners.myecom.tmp.FirebaseHelper;
+import com.streamliners.myecom.tmp.Order;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,15 +31,17 @@ import java.util.HashMap;
 import java.util.List;
 
 public class OrdersActivity extends AppCompatActivity {
-    ActivityOrdersBinding mainBinding;
-    OrdersHelper ordersHelper = new OrdersHelper();
-    List<Order> orders = new ArrayList<>();
+    private ActivityOrdersBinding mainBinding;
+    private final FirebaseHelper firebaseHelper = new FirebaseHelper();
+
+    private List<Order> orders = new ArrayList<>();
     OrdersAdapter adapter;
-    final HashMap<String, Integer> orderIdIndexMap  = new HashMap<>();
+    private HashMap<String, Integer> orderIdIndexMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mainBinding = ActivityOrdersBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
 
@@ -47,7 +55,8 @@ public class OrdersActivity extends AppCompatActivity {
      * fetching order from the firebase
      */
     private void fetchOrders() {
-        ordersHelper.liveOrders(new OrdersHelper.OnOrderQueryListener() {
+
+        firebaseHelper.getOrders(orders, FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber(),new FirebaseHelper.OnOrderQueryListener() {
             @Override
             public void onCompleted() {
                 mainBinding.progressBar.setVisibility(View.GONE);
@@ -55,7 +64,7 @@ public class OrdersActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNewOrderReceived(String orderId, Order order) {
+            public void orderFetched(String orderId, Order order) {
                 if (orderIdIndexMap.containsKey(orderId)) {
                     int index = orderIdIndexMap.get(orderId);
 
@@ -76,7 +85,8 @@ public class OrdersActivity extends AppCompatActivity {
 
             @Override
             public void onError(String error) {
-                Toast.makeText(OrdersActivity.this, "error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(OrdersActivity.this, error, Toast.LENGTH_SHORT).show();
+                Log.e("IndexError", error);
             }
         });
     }
@@ -94,14 +104,14 @@ public class OrdersActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onOrderStateChanges(int position, int state) {
+            public void onOrderCancelled(int position) {
                 if (position == -1) return;
 
                 Order order = orders.get(position);
-                ordersHelper.changeOrderState(order.orderId, state, new OrdersHelper.OrderStateChangeListener() {
+                firebaseHelper.cancelOrder(order.orderId, new FirebaseHelper.OnOrderCancelListener() {
                     @Override
-                    public void onSuccessfulChanged() {
-                        sendNotification(order.userDeviceToken, getOrderStatus(state));
+                    public void onSuccessfulCancelled() {
+                        sendNotification(order.userName, order.noOfItems, (int) order.subTotal);
                     }
 
                     @Override
@@ -115,28 +125,18 @@ public class OrdersActivity extends AppCompatActivity {
         mainBinding.list.setAdapter(adapter);
     }
 
-    private String getOrderStatus(int state) {
-        switch (state) {
-            case Order.OrderStatus.ACCEPTED: return getString(R.string.accepted_state);
-            case Order.OrderStatus.WAITING: return getString(R.string.waiting_state);
-            case Order.OrderStatus.DECLINED: return getString(R.string.declined_state);
-            case Order.OrderStatus.DELIVERED: return getString(R.string.delivered_state);
-            case Order.OrderStatus.DISPATCHED: return getString(R.string.dispatched_state);
-            case Order.OrderStatus.CANCELLED: return getString(R.string.cancelled_state);
-            default: return null;
-        }
-    }
-
     /**
      * Starts the notification process to send it
      */
-    private void sendNotification(String token, String status) {
+    private void sendNotification(String userName, int noOfItems, int total) {
+        Toast.makeText(this, "Begins", Toast.LENGTH_SHORT).show();
+
         // Getting the authentication key first
         RemoteConfigHelper.getAuthenticationKey(OrdersActivity.this, new RemoteConfigHelper.OnRemoteConfigFetchedListener() {
             @Override
             public void onSuccessfullyFetched(String key) {
                 // Creating the message
-                String message = MessageBuilder.buildNewOrderMessage(token, status);
+                String message = MessageBuilder.buildNewOrderMessage(MessageBuilder.ORDER_CANCEL_FORMAT, userName, noOfItems, total);
 
                 // Sending the message and on complete displaying the appropriate dialogs
                 new FCMSender().send(message, key, new Callback() {

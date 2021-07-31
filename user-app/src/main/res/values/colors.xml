@@ -11,4 +11,14 @@
     <color name="extreme_light_gray">#F6F6F6</color>
     <color name="light_red">#FF1d1D</color>
     <color name="green">#059142</color>
+
+    <color name="waiting_state">#EEBC1D</color>
+    <color name="cancelled_state">#b00020</color>
+    <color name="accepted_status">#5636a7</color>
+    <color name="dispatched_status">#00889c</color>
+    <color name="delivered_status">#27ae60</color>
+    <color name="declined_status">#b00020</color>
+
+    <color name="orderBackground">#e6e0f0</color>
+    <color name="divider">#d5d0df</color>
 </resources>

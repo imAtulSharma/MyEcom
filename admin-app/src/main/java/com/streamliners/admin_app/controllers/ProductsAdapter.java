@@ -245,4 +245,10 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void listenerSetter(ItemVbProductBinding b) {
         b.frameLayout.setOnCreateContextMenuListener(null);
     }
+
+    public interface AdapterCallbacksListener {
+        void onCartUpdated();
+        void onSizeChanges(int size);
+    }
 }
+

@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.streamliners.models.listeners.OnCompleteListener;
 import com.streamliners.models.models.Cart;
@@ -20,7 +21,7 @@ import com.streamliners.models.models.Product;
 import com.streamliners.myecom.controllers.AdapterCallbacksListener;
 import com.streamliners.myecom.controllers.ProductsAdapter;
 import com.streamliners.myecom.databinding.ActivityMainBinding;
-import com.streamliners.myecom.tmp.ProductsHelper;
+import com.streamliners.myecom.tmp.FirebaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private ProductsAdapter adapter;
     private Cart cart = new Cart();
     List<Product> products;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,12 +42,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(mainBinding.getRoot());
 
         mPrefs = getPreferences(MODE_PRIVATE);
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
 
         if (mPrefs.contains(Constants.cart)) getDataFromSharedPrefs();
 
         products = new ArrayList<>();
-        ProductsHelper helper = new ProductsHelper();
-        helper.getData(products, new OnCompleteListener<List<Product>>() {
+        FirebaseHelper helper = new FirebaseHelper();
+        helper.getProducts(products, new OnCompleteListener<List<Product>>() {
             @Override
             public void onCompleted(List<Product> products) {
                 mainBinding.progressBar.setVisibility(View.GONE);
@@ -108,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
      * To display the previous orders
      */
     private void myOrders() {
-        Toast.makeText(this, "Previous Orders", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(MainActivity.this, OrdersActivity.class));
     }
 
     /**

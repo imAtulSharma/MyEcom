@@ -9,14 +9,31 @@ import android.view.LayoutInflater;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import com.streamliners.models.listeners.OnCompleteListener;
 import com.streamliners.models.models.Cart;
 import com.streamliners.models.models.CartItem;
 import com.streamliners.myecom.databinding.ActivityCheckoutBinding;
 import com.streamliners.myecom.databinding.DialogCompleteCheckoutBinding;
 import com.streamliners.myecom.databinding.ItemCartSummaryBinding;
+import com.streamliners.myecom.messaging.FCMSender;
+import com.streamliners.myecom.messaging.MessageBuilder;
+import com.streamliners.myecom.messaging.RemoteConfigHelper;
+import com.streamliners.myecom.tmp.FirebaseHelper;
+import com.streamliners.myecom.tmp.Order;
+
+import java.io.IOException;
+
+import static com.streamliners.myecom.MapsActivity.KEY_LATLNG;
 
 public class CheckoutActivity extends AppCompatActivity {
     // Key for transferring the cart across activity
@@ -29,18 +46,25 @@ public class CheckoutActivity extends AppCompatActivity {
     private LayoutInflater inflater;
     // Cart of items
     private Cart cart;
+    // For firebase work
+    private FirebaseHelper firebaseHelper;
 
     // Preferences
     private SharedPreferences preferences;
+
+    private MyApplication myApplication;
 
     // Details of the user
     private String address = "";
     private String name = "";
     private String number = "";
+    private double[] latLng = new double[2];
 
     public static final String KEY_ADDRESS = "Address";
     public static final String KEY_NAME = "Name";
     public static final String KEY_NUMBER = "Number";
+    private static final String KEY_LNG = "Longitude";
+    private static final String KEY_LAT = "Latitude";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +75,12 @@ public class CheckoutActivity extends AppCompatActivity {
         mainBinding = ActivityCheckoutBinding.inflate(inflater);
         setContentView(mainBinding.getRoot());
 
+        myApplication = new MyApplication(this);
+
         // Getting cart from intent
         cart = (Cart) getIntent().getExtras().getSerializable(KEY_CART);
+
+        firebaseHelper = new FirebaseHelper();
 
         preferences = getPreferences(MODE_PRIVATE);
         getDataFromSharedPreferences();
@@ -72,6 +100,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
         if (requestCode == RC_ADDRESS && resultCode == RESULT_OK) {
             address = data.getStringExtra(KEY_ADDRESS);
+            latLng = data.getDoubleArrayExtra(KEY_LATLNG);
             mainBinding.tvAddress.setText("Address : " + address);
         }
     }
@@ -100,9 +129,85 @@ public class CheckoutActivity extends AppCompatActivity {
 
         saveDataInSharedPreferences();
 
-        DialogCompleteCheckoutBinding binding = DialogCompleteCheckoutBinding.inflate(inflater);
+        myApplication.showDialog();
+
+        firebaseHelper.placeOrder(new Order(cart, name, number, address, null, new LatLng(latLng[0], latLng[1])),
+                new OnCompleteListener<Order>() {
+                    @Override
+                    public void onCompleted(Order order) {
+                        sendNotification(name, order.noOfItems, (int) order.subTotal);
+                    }
+
+                    @Override
+                    public void onFailed(String error) {
+                        new MaterialAlertDialogBuilder(CheckoutActivity.this)
+                                .setTitle("Error")
+                                .setMessage(error)
+                                .show();
+                    }
+                });
+    }
+
+    /**
+     * Starts the notification process to send it
+     */
+    private void sendNotification(String userName, int noOfItems, int total) {
+        // Getting the authentication key first
+        RemoteConfigHelper.getAuthenticationKey(CheckoutActivity.this, new RemoteConfigHelper.OnRemoteConfigFetchedListener() {
+            @Override
+            public void onSuccessfullyFetched(String key) {
+                // Creating the message
+                String message = MessageBuilder.buildNewOrderMessage(MessageBuilder.NEW_ORDER_FORMAT, userName, noOfItems, total);
+
+                // Sending the message and on complete displaying the appropriate dialogs
+                new FCMSender().send(message, key, new Callback() {
+                    @Override
+                    public void onFailure(Request request, IOException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showDialog("Failure!", "Error: "+ e.toString());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Response response) throws IOException {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                myApplication.hideDialog();
+                                DialogCompleteCheckoutBinding binding = DialogCompleteCheckoutBinding.inflate(inflater);
+                                 AlertDialog dialog = new MaterialAlertDialogBuilder(CheckoutActivity.this)
+                                        .setView(binding.getRoot())
+                                        .setCancelable(false)
+                                        .show();
+                                binding.btnGoToOrders.setOnClickListener(view -> {
+                                    startActivity(new Intent(CheckoutActivity.this, OrdersActivity.class));
+                                    dialog.dismiss();
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            public void onErrorOccurred(String error) {
+                showDialog("Failure!", "Error: "+ error);
+            }
+        });
+    }
+
+    /**
+     * Show the dialog
+     * @param title title of the dialog
+     * @param message message in the dialog
+     */
+    private void showDialog(String title, String message) {
         new MaterialAlertDialogBuilder(this)
-                .setView(binding.getRoot())
+                .setTitle(title)
+                .setMessage(message)
                 .show();
     }
 
@@ -178,6 +283,8 @@ public class CheckoutActivity extends AppCompatActivity {
                 .putString(KEY_ADDRESS, address)
                 .putString(KEY_NAME, name)
                 .putString(KEY_NUMBER, number)
+                .putString(KEY_LAT, String.valueOf(latLng[0]))
+                .putString(KEY_LNG, String.valueOf(latLng[1]))
                 .apply();
     }
 
@@ -193,5 +300,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
         address = preferences.getString(KEY_ADDRESS, "");
         mainBinding.tvAddress.setText("Address : " + address);
+
+        latLng[0] = Double.parseDouble(preferences.getString(KEY_LAT, "0"));
+        latLng[1] = Double.parseDouble(preferences.getString(KEY_LNG, "0"));
     }
 }

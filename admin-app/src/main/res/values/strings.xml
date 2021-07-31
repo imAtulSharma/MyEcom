@@ -9,7 +9,7 @@
     <string name="remove_all">REMOVE ALL</string>
     <string name="save">SAVE</string>
     <string name="product_name">Product Name</string>
-    <string name="title_cart_summary">CART SUMMARY</string>
+    <string name="title_order_summary">Order Summary</string>
     <string name="title_total">TOTAL</string>
     <string name="title_delivery_info">DELIVERY INFO</string>
     <string name="hint_name">Name</string>
@@ -22,4 +22,16 @@
     <string name="title_activity_maps">Map</string>
     <string name="drag_and_drop">Drag and Drop</string>
     <string name="sort">Sort</string>
+
+    <string name="waiting_state">WAITING</string>
+    <string name="cancelled_state">CANCELLED</string>
+    <string name="accepted_state">ACCEPTED</string>
+    <string name="dispatched_state">DISPATCHED</string>
+    <string name="delivered_state">DELIVERED</string>
+    <string name="declined_state">DECLINED</string>
+
+    <string name="accept">ACCEPT</string>
+    <string name="decline">DECLINE</string>
+    <string name="total">TOTAL</string>
+    <string name="close">CLOSE</string>
 </resources>

@@ -62,6 +62,8 @@ public class ProductsActivity extends AppCompatActivity {
         productsBinding = ActivityProductsBinding.inflate(getLayoutInflater());
         setContentView(productsBinding.getRoot());
 
+        setTitle("Products");
+
         sharedPreferences = getPreferences(MODE_PRIVATE);
         products = new ArrayList<>();
         new ProductsHelper().getData(products, new OnCompleteListener<List<Product>>() {
@@ -82,7 +84,6 @@ public class ProductsActivity extends AppCompatActivity {
             }
         });
         context = this;
-
 
         setUpFab();
     }
