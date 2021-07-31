@@ -20,7 +20,7 @@ import java.util.List;
 public class OrdersActivity extends AppCompatActivity {
     ActivityOrdersBinding mainBinding;
     OrdersHelper ordersHelper = new OrdersHelper();
-    List<Order> orders;
+    List<Order> orders = new ArrayList<>();
     OrdersAdapter adapter;
 
     @Override
@@ -36,32 +36,21 @@ public class OrdersActivity extends AppCompatActivity {
      * fetching order from the firebase
      */
     private void fetchOrders() {
-        ordersHelper.getOrders(new OnCompleteListener<List<Order>>() {
+        ordersHelper.liveOrders(new OrdersHelper.OnOrderQueryListener() {
             @Override
-            public void onCompleted(List<Order> orders) {
-                OrdersActivity.this.orders = orders;
-
-                mainBinding.progressBar.setVisibility(View.GONE);
+            public void onCompleted() {
                 setupRecyclerView();
-
-                Toast.makeText(OrdersActivity.this, "received", Toast.LENGTH_SHORT).show();
-
-                ordersHelper.liveOrders(new OnCompleteListener<Order>() {
-                    @Override
-                    public void onCompleted(Order order) {
-                        orders.add(order);
-                        adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onFailed(String error) {
-                        Toast.makeText(OrdersActivity.this, "error", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                mainBinding.progressBar.setVisibility(View.GONE);
             }
 
             @Override
-            public void onFailed(String error) {
+            public void onOrderFetched(Order order) {
+                orders.add(order);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(String error) {
                 Toast.makeText(OrdersActivity.this, "error", Toast.LENGTH_SHORT).show();
             }
         });

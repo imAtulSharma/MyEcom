@@ -52,24 +52,32 @@ public class OrdersHelper {
         });
     }
 
-    public void liveOrders(OnCompleteListener<Order> listener) {
+    public void liveOrders(OnOrderQueryListener listener) {
         CollectionReference colRef = FirebaseFirestore.getInstance()
                 .collection("orders");
         colRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value,
                                 @Nullable FirebaseFirestoreException e) {
+                listener.onCompleted();
+
                 if (e != null) {
-                    listener.onFailed(e.toString());
+                    listener.onError(e.toString());
                     return;
                 }
 
                 for (QueryDocumentSnapshot doc : value) {
                     if (doc != null) {
-                        listener.onCompleted(doc.toObject(Order.class));
+                        listener.onOrderFetched(doc.toObject(Order.class));
                     }
                 }
             }
         });
+    }
+
+    public interface OnOrderQueryListener {
+        void onCompleted();
+        void onOrderFetched(Order order);
+        void onError(String error);
     }
 }
