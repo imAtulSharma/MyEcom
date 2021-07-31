@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -172,12 +173,13 @@ public class CheckoutActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 DialogCompleteCheckoutBinding binding = DialogCompleteCheckoutBinding.inflate(inflater);
-                                new MaterialAlertDialogBuilder(CheckoutActivity.this)
+                                 AlertDialog dialog = new MaterialAlertDialogBuilder(CheckoutActivity.this)
                                         .setView(binding.getRoot())
                                         .setCancelable(false)
                                         .show();
                                 binding.btnGoToOrders.setOnClickListener(view -> {
                                     startActivity(new Intent(CheckoutActivity.this, OrdersActivity.class));
+                                    dialog.dismiss();
                                 });
                             }
                         });

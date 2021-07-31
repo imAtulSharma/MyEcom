@@ -1,5 +1,6 @@
 package com.streamliners.admin_app;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -13,6 +14,7 @@ import com.streamliners.admin_app.firebasehelpers.Order;
 import com.streamliners.admin_app.firebasehelpers.OrdersHelper;
 import com.streamliners.models.listeners.OnCompleteListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrdersActivity extends AppCompatActivity {
@@ -40,9 +42,22 @@ public class OrdersActivity extends AppCompatActivity {
                 OrdersActivity.this.orders = orders;
 
                 mainBinding.progressBar.setVisibility(View.GONE);
+                setupRecyclerView();
 
                 Toast.makeText(OrdersActivity.this, "received", Toast.LENGTH_SHORT).show();
-                setupRecyclerView();
+
+                ordersHelper.liveOrders(new OnCompleteListener<Order>() {
+                    @Override
+                    public void onCompleted(Order order) {
+                        orders.add(order);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFailed(String error) {
+                        Toast.makeText(OrdersActivity.this, "error", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
