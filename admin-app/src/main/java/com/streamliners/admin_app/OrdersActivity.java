@@ -29,6 +29,7 @@ public class OrdersActivity extends AppCompatActivity {
         mainBinding = ActivityOrdersBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
 
+        setupRecyclerView();
         fetchOrders();
     }
 
@@ -39,8 +40,8 @@ public class OrdersActivity extends AppCompatActivity {
         ordersHelper.liveOrders(new OrdersHelper.OnOrderQueryListener() {
             @Override
             public void onCompleted() {
-                setupRecyclerView();
                 mainBinding.progressBar.setVisibility(View.GONE);
+                if (orders.isEmpty()) mainBinding.tvNoOrders.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -60,7 +61,10 @@ public class OrdersActivity extends AppCompatActivity {
         adapter = new OrdersAdapter(this, orders, new OrdersAdapter.AdapterCallbacksListener() {
             @Override
             public int onSizeChanges(int size) {
-                if (size == 0) mainBinding.tvNoOrders.setVisibility(View.VISIBLE);
+                if (size == 0) {
+                    if (mainBinding.progressBar.getVisibility() == View.GONE)
+                        mainBinding.tvNoOrders.setVisibility(View.VISIBLE);
+                }
                 else mainBinding.tvNoOrders.setVisibility(View.INVISIBLE);
                 return size;
             }
