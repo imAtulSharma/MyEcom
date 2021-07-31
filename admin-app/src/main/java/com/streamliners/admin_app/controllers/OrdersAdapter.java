@@ -44,9 +44,9 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         // Bind the order
         binder.bind(((OrderViewHolder) holder).b, order, new OrderBinder.OnOrderStatusChangeListener() {
             @Override
-            public void onStatusChange(Order order) {
+            public void onStatusChange(Order order, int state) {
                 int index = orders.indexOf(order);
-                listener.onOrderStateChanges(index);
+                listener.onOrderStateChanges(index, state);
                 OrdersAdapter.this.notifyItemChanged(orders.size() - 1 - index);
             }
         });
@@ -59,7 +59,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public interface AdapterCallbacksListener {
         int onSizeChanges(int size);
-        void onOrderStateChanges(int position);
+        void onOrderStateChanges(int position, int state);
     }
 }
 

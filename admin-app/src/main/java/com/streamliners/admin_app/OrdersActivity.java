@@ -52,12 +52,14 @@ public class OrdersActivity extends AppCompatActivity {
                     orders.remove(index);
                     adapter.notifyItemRemoved(index);
 
+                    order.orderId = orderId;
                     orders.add(index, order);
                     adapter.notifyItemChanged(index);
                     return;
                 }
 
                 orderIdIndexMap.put(orderId, orders.size());
+                order.orderId = orderId;
                 orders.add(order);
                 adapter.notifyItemInserted(orders.size() - 1);
             }
@@ -82,8 +84,19 @@ public class OrdersActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onOrderStateChanges(int position) {
+            public void onOrderStateChanges(int position, int state) {
                 Order order = orders.get(position);
+                ordersHelper.changeOrderState(order.orderId, state, new OrdersHelper.OrderStateChangeListener() {
+                    @Override
+                    public void onSuccessfulChanged() {
+
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
             }
         });
         mainBinding.list.setLayoutManager(new LinearLayoutManager(this));

@@ -132,29 +132,25 @@ public class OrderBinder {
         binding.btnDecline.setOnClickListener(view -> {
             binding.btnDecline.setVisibility(View.GONE);
             binding.btnAccept.setVisibility(View.GONE);
-            order.status = Order.OrderStatus.DECLINED;
-            listener.onStatusChange(order);
+            listener.onStatusChange(order, Order.OrderStatus.DECLINED);
         });
 
         binding.btnAccept.setOnClickListener(view -> {
             binding.btnAccept.setVisibility(View.GONE);
             binding.btnDecline.setVisibility(View.GONE);
             binding.btnDispatch.setVisibility(View.VISIBLE);
-            order.status = Order.OrderStatus.ACCEPTED;
-            listener.onStatusChange(order);
+            listener.onStatusChange(order, Order.OrderStatus.ACCEPTED);
         });
 
         binding.btnDispatch.setOnClickListener(view -> {
             binding.btnDispatch.setVisibility(View.GONE);
             binding.btnDeliver.setVisibility(View.VISIBLE);
-            order.status = Order.OrderStatus.DISPATCHED;
-            listener.onStatusChange(order);
+            listener.onStatusChange(order, Order.OrderStatus.DISPATCHED);
         });
 
         binding.btnDeliver.setOnClickListener(view -> {
             binding.btnDeliver.setVisibility(View.GONE);
-            order.status = Order.OrderStatus.DELIVERED;
-            listener.onStatusChange(order);
+            listener.onStatusChange(order, Order.OrderStatus.DELIVERED);
         });
     }
 
@@ -231,6 +227,6 @@ public class OrderBinder {
     }
 
     public interface OnOrderStatusChangeListener {
-        void onStatusChange(Order order);
+        void onStatusChange(Order order, int status);
     }
 }

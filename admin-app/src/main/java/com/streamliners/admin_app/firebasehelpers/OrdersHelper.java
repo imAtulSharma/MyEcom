@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -74,9 +75,33 @@ public class OrdersHelper {
         });
     }
 
+    public void changeOrderState(String orderId, int state, OrderStateChangeListener listener) {
+        DocumentReference docRef = FirebaseFirestore.getInstance()
+                .collection("orders").document(orderId);
+
+        docRef.update("status", state)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        listener.onSuccessfulChanged();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onError(e.toString());
+                    }
+                });
+    }
+
     public interface OnOrderQueryListener {
         void onCompleted();
         void onNewOrderReceived(String orderId, Order order);
+        void onError(String error);
+    }
+
+    public interface OrderStateChangeListener {
+        void onSuccessfulChanged();
         void onError(String error);
     }
 }

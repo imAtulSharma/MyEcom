@@ -33,7 +33,7 @@ public class Order {
     public int status, noOfItems;
     public float subTotal;
     public HashMap<String, CartItem> cartItems;
-    public String userName, userPhoneNo, userAddress, userDeviceToken;
+    public String orderId, userName, userPhoneNo, userAddress, userDeviceToken;
     public double latitude;
     public double longitude;
 
