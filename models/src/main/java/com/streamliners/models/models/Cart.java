@@ -64,10 +64,10 @@ public class Cart implements Serializable {
         } else {
             CartItem cartItem =  new CartItem(product.name, variant.price, 1);
             cartItems.put(key, cartItem);
+            numberOfItems++;
         }
 
         // Update cart summary
-        numberOfItems++;
         totalAmount += variant.price;
     }
 
@@ -110,7 +110,7 @@ public class Cart implements Serializable {
             if (cartItems.containsKey(key)) {
                 // update cart details
                 totalAmount -= cartItems.get(key).cost();
-                numberOfItems -= cartItems.get(key).qty;
+                numberOfItems--;
 
                 // removing from the  cart items
                 cartItems.remove(key);
