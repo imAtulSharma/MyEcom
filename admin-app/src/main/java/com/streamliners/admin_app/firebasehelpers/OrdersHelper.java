@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,7 +54,7 @@ public class OrdersHelper {
     public void liveOrders(OnOrderQueryListener listener) {
         CollectionReference colRef = FirebaseFirestore.getInstance()
                 .collection("orders");
-        colRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        colRef.orderBy("createdTime").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value,
                                 @Nullable FirebaseFirestoreException e) {
@@ -68,7 +67,7 @@ public class OrdersHelper {
 
                 for (QueryDocumentSnapshot doc : value) {
                     if (doc != null) {
-                        listener.onOrderFetched(doc.toObject(Order.class));
+                        listener.onNewOrderReceived(doc.getId(), doc.toObject(Order.class));
                     }
                 }
             }
@@ -77,7 +76,7 @@ public class OrdersHelper {
 
     public interface OnOrderQueryListener {
         void onCompleted();
-        void onOrderFetched(Order order);
+        void onNewOrderReceived(String orderId, Order order);
         void onError(String error);
     }
 }

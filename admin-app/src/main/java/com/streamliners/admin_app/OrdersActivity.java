@@ -15,6 +15,7 @@ import com.streamliners.admin_app.firebasehelpers.OrdersHelper;
 import com.streamliners.models.listeners.OnCompleteListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class OrdersActivity extends AppCompatActivity {
@@ -22,6 +23,7 @@ public class OrdersActivity extends AppCompatActivity {
     OrdersHelper ordersHelper = new OrdersHelper();
     List<Order> orders = new ArrayList<>();
     OrdersAdapter adapter;
+    final HashMap<String, Integer> orderIdIndexMap  = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +47,21 @@ public class OrdersActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onOrderFetched(Order order) {
+            public void onNewOrderReceived(String orderId, Order order) {
+                if (orderIdIndexMap.containsKey(orderId)) {
+                    int index = orderIdIndexMap.get(orderId);
+
+                    orders.remove(index);
+                    adapter.notifyItemRemoved(index);
+
+                    orders.add(index, order);
+                    adapter.notifyItemChanged(index);
+                    return;
+                }
+
+                orderIdIndexMap.put(orderId, orders.size());
                 orders.add(order);
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemInserted(orders.size() - 1);
             }
 
             @Override
