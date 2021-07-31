@@ -52,6 +52,10 @@ public class OrdersHelper {
         });
     }
 
+    /**
+     * Get all orders and set the live update listener
+     * @param listener listener to handle callbacks
+     */
     public void liveOrders(OnOrderQueryListener listener) {
         CollectionReference colRef = FirebaseFirestore.getInstance()
                 .collection("orders");
@@ -75,6 +79,12 @@ public class OrdersHelper {
         });
     }
 
+    /**
+     * To update the change order status for the particular order
+     * @param orderId ID of the order
+     * @param state state to be changed of the order
+     * @param listener listener to handle the callbacks
+     */
     public void changeOrderState(String orderId, int state, OrderStateChangeListener listener) {
         DocumentReference docRef = FirebaseFirestore.getInstance()
                 .collection("orders").document(orderId);

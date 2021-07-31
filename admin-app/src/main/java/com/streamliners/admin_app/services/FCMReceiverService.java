@@ -16,6 +16,7 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.streamliners.admin_app.MainActivity;
+import com.streamliners.admin_app.OrdersActivity;
 import com.streamliners.admin_app.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +56,7 @@ public class FCMReceiverService extends FirebaseMessagingService {
      */
     private void notify(String title, String body) {
         // Making the pending intent
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, OrdersActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Building the notification

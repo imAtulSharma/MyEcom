@@ -153,7 +153,7 @@ public class CheckoutActivity extends AppCompatActivity {
             @Override
             public void onSuccessfullyFetched(String key) {
                 // Creating the message
-                String message = MessageBuilder.buildNewOrderMessage(userName, noOfItems, total);
+                String message = MessageBuilder.buildNewOrderMessage(MessageBuilder.NEW_ORDER_FORMAT, userName, noOfItems, total);
 
                 // Sending the message and on complete displaying the appropriate dialogs
                 new FCMSender().send(message, key, new Callback() {

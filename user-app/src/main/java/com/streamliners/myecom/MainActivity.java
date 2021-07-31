@@ -13,24 +13,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.streamliners.models.listeners.OnCompleteListener;
 import com.streamliners.models.models.Cart;
 import com.streamliners.models.models.Product;
 import com.streamliners.myecom.controllers.AdapterCallbacksListener;
 import com.streamliners.myecom.controllers.ProductsAdapter;
 import com.streamliners.myecom.databinding.ActivityMainBinding;
-import com.streamliners.myecom.messaging.FCMSender;
-import com.streamliners.myecom.messaging.MessageBuilder;
-import com.streamliners.myecom.messaging.RemoteConfigHelper;
 import com.streamliners.myecom.tmp.FirebaseHelper;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         products = new ArrayList<>();
         FirebaseHelper helper = new FirebaseHelper();
-        helper.getData(products, new OnCompleteListener<List<Product>>() {
+        helper.getProducts(products, new OnCompleteListener<List<Product>>() {
             @Override
             public void onCompleted(List<Product> products) {
                 mainBinding.progressBar.setVisibility(View.GONE);

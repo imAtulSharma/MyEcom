@@ -85,6 +85,8 @@ public class OrdersActivity extends AppCompatActivity {
 
             @Override
             public void onOrderStateChanges(int position, int state) {
+                if (position == -1) return;
+
                 Order order = orders.get(position);
                 ordersHelper.changeOrderState(order.orderId, state, new OrdersHelper.OrderStateChangeListener() {
                     @Override

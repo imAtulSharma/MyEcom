@@ -1,84 +1,28 @@
 package com.streamliners.myecom.tmp;
 
-import android.net.Uri;
-
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.streamliners.models.listeners.OnCompleteListener;
 import com.streamliners.models.models.Product;
-import com.streamliners.models.models.Variant;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 public class FirebaseHelper {
-    public List<Product> getProducts(){
-        List<Product> products = new ArrayList<>();
-
-        Product kiwi = new Product("Kiwi", Uri.parse("android.resource://com.streamliners.myecom/drawable/kiwi").toString(), new ArrayList<Variant>(
-                Arrays.asList(new Variant("500g", 96), new Variant("1kg", 180))
-        ));
-
-        Product apple = new Product("Apple",Uri.parse("android.resource://com.streamliners.myecom/drawable/apple").toString(), (float) 0.55, 100);
-
-        Product banana = new Product("Banana", Uri.parse("android.resource://com.streamliners.myecom/drawable/banane_large").toString(),1,30);
-
-        Product surfExcel = new Product("Surf Excel", Uri.parse("android.resource://com.streamliners.myecom/drawable/surf_excel").toString(), new ArrayList<>(
-                Arrays.asList(new Variant("1kg", 120), new Variant("5kg", 500), new Variant("10kg", 900))
-        ));
-
-        Product milk = new Product("Milk", Uri.parse("android.resource://com.streamliners.myecom/drawable/milk").toString(), new ArrayList<>(
-                Arrays.asList(new Variant("500 ml", 35), new Variant("1 litre", 60))
-        ));
-
-        Product grapes = new Product("Grapes",Uri.parse("android.resource://com.streamliners.myecom/drawable/grapes").toString(), (float) 1, 40);
-
-        Product mango = new Product("Mango",Uri.parse("android.resource://com.streamliners.myecom/drawable/mango").toString(), (float) 0, 50);
-
-
-        Product paneer = new Product("Paneer", Uri.parse("android.resource://com.streamliners.myecom/drawable/paneer").toString(), new ArrayList<Variant>(
-                Arrays.asList(new Variant("200g", 80), new Variant("400g", 150))
-        ));
-        Product orange = new Product("Orange", Uri.parse("android.resource://com.streamliners.myecom/drawable/orange").toString(),3,60);
-
-        Product sugar = new Product("Sugar", Uri.parse("android.resource://com.streamliners.myecom/drawable/sugar").toString(), new ArrayList<>(
-                Arrays.asList(new Variant("1kg", 800), new Variant("5kg", 500), new Variant("1kg", 800), new Variant("5kg", 500), new Variant("1kg", 800), new Variant("5kg", 500))
-        ));
-
-        Product peach = new Product("Peach",Uri.parse("android.resource://com.streamliners.myecom/drawable/peach").toString(), (float) 1, 80);
-
-        Product aashirvaad = new Product("Aashirvaad Aata", Uri.parse("android.resource://com.streamliners.myecom/drawable/aashirvaad").toString(), new ArrayList<>(
-                Arrays.asList(new Variant("1kg", 100), new Variant("5kg",480))
-        ));
-
-        products.add(kiwi);
-        products.add(apple);
-        products.add(banana);
-        products.add(surfExcel);
-        products.add(milk);
-        products.add(grapes);
-        products.add(paneer);
-        products.add(mango);
-        products.add(orange);
-        products.add(sugar);
-        products.add(peach);
-        products.add(aashirvaad);
-
-
-        return products;
-    }
-
     public void addToFireStore(Product product, OnCompleteListener<Product> listener){
         FirebaseFirestore db;
         db = FirebaseFirestore.getInstance();
@@ -97,7 +41,7 @@ public class FirebaseHelper {
                 });
     }
 
-    public void getData(List<Product> products, OnCompleteListener<List<Product>> listener){
+    public void getProducts(List<Product> products, OnCompleteListener<List<Product>> listener){
         FirebaseFirestore db;
         db = FirebaseFirestore.getInstance();
         db.collection("products").orderBy("position").get()
@@ -114,6 +58,65 @@ public class FirebaseHelper {
                 });
     }
 
+    /**
+     * Fetch the orders according to the particular user
+     * @param orders list of orders
+     * @param phoneNumber phone number of the user
+     * @param listener listener to handle callbacks
+     */
+    public void getOrders(List<Order> orders, String phoneNumber, OnOrderQueryListener listener){
+        CollectionReference colRef = FirebaseFirestore.getInstance()
+                .collection("orders");
+        colRef.whereEqualTo("userAuthPhoneNumber", phoneNumber)
+                .orderBy("createdTime").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value,
+                                @Nullable FirebaseFirestoreException e) {
+                listener.onCompleted();
+
+                if (e != null) {
+                    listener.onError(e.toString());
+                    return;
+                }
+
+                for (QueryDocumentSnapshot doc : value) {
+                    if (doc != null) {
+                        listener.orderFetched(doc.getId(), doc.toObject(Order.class));
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Cancels a particular order
+     * @param orderId ID of the order
+     * @param listener listener to handle callbacks
+     */
+    public void cancelOrder(String orderId, OnOrderCancelListener listener)  {
+        DocumentReference docRef = FirebaseFirestore.getInstance()
+                .collection("orders").document(orderId);
+
+        docRef.update("status", Order.OrderStatus.CANCELLED)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        listener.onSuccessfulCancelled();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onError(e.toString());
+                    }
+                });
+    }
+
+    /**
+     * Places an order
+     * @param order order to be placed
+     * @param listener listener to handle callbacks
+     */
     public void placeOrder(Order order, OnCompleteListener<Order> listener) {
         // Firstly fetching the user's device token and then sending the notification
         FirebaseMessaging.getInstance().getToken()
@@ -143,5 +146,44 @@ public class FirebaseHelper {
                                 });
                     }
                 });
+    }
+
+    /**
+     * Represent listener for the firebase query
+     */
+    public interface OnOrderQueryListener {
+        /**
+         * When query executed completely
+         */
+        void onCompleted();
+
+        /**
+         * When new order found
+         * @param orderId ID of the order
+         * @param order order found
+         */
+        void orderFetched(String orderId, Order order);
+
+        /**
+         * On error occurs
+         * @param error error occurred
+         */
+        void onError(String error);
+    }
+
+    /**
+     * Represents listener for the order cancelled query
+     */
+    public interface OnOrderCancelListener {
+        /**
+         * Successful cancellation of the order
+         */
+        void onSuccessfulCancelled();
+
+        /**
+         * When error occurs
+         * @param error error occurred
+         */
+        void onError(String error);
     }
 }

@@ -2,6 +2,7 @@ package com.streamliners.myecom.tmp;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.streamliners.models.models.Cart;
 import com.streamliners.models.models.CartItem;
 
@@ -33,7 +34,7 @@ public class Order {
     public int status, noOfItems;
     public float subTotal;
     public HashMap<String, CartItem> cartItems;
-    public String userName, userPhoneNo, userAddress, userDeviceToken;
+    public String orderId, userName, userAuthPhoneNumber, userPhoneNo, userAddress, userDeviceToken;
     public double latitude;
     public double longitude;
 
@@ -44,6 +45,7 @@ public class Order {
         this.noOfItems = cart.numberOfItems;
         this.subTotal = cart.totalAmount;
         this.userName = userName;
+        this.userAuthPhoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
         this.userPhoneNo = userPhoneNo;
         this.userAddress = userAddress;
         this.userDeviceToken = userDeviceToken;
