@@ -22,8 +22,6 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public OrderBinder binder;
     public AdapterCallbacksListener listener;
 
-    public int mode = 0;
-
     public OrdersAdapter(Context context, List<Order> orders, AdapterCallbacksListener listener) {
         this.context = context;
         this.orders = orders;
@@ -42,9 +40,16 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull @org.jetbrains.annotations.NotNull RecyclerView.ViewHolder holder, int position) {
         // Getting the order from the list
-        Order order = orders.get(position);
+        Order order = orders.get(orders.size() - 1 - position);
         // Bind the order
-        binder.bind(((OrderViewHolder) holder).b, order);
+        binder.bind(((OrderViewHolder) holder).b, order, new OrderBinder.OnOrderStatusChangeListener() {
+            @Override
+            public void onStatusChange(Order order) {
+                int index = orders.indexOf(order);
+                listener.onOrderStateChanges(index);
+                OrdersAdapter.this.notifyItemChanged(orders.size() - 1 - index);
+            }
+        });
     }
 
     @Override
@@ -54,6 +59,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public interface AdapterCallbacksListener {
         int onSizeChanges(int size);
+        void onOrderStateChanges(int position);
     }
 }
 

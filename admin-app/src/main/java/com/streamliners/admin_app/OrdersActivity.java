@@ -1,18 +1,16 @@
 package com.streamliners.admin_app;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.streamliners.admin_app.controllers.OrdersAdapter;
 import com.streamliners.admin_app.databinding.ActivityOrdersBinding;
 import com.streamliners.admin_app.firebasehelpers.Order;
 import com.streamliners.admin_app.firebasehelpers.OrdersHelper;
-import com.streamliners.models.listeners.OnCompleteListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,6 +79,11 @@ public class OrdersActivity extends AppCompatActivity {
                 }
                 else mainBinding.tvNoOrders.setVisibility(View.INVISIBLE);
                 return size;
+            }
+
+            @Override
+            public void onOrderStateChanges(int position) {
+                Order order = orders.get(position);
             }
         });
         mainBinding.list.setLayoutManager(new LinearLayoutManager(this));

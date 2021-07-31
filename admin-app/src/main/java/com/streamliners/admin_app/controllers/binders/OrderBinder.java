@@ -2,10 +2,17 @@ package com.streamliners.admin_app.controllers.binders;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.storage.OnObbStateChangeListener;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.Timestamp;
@@ -61,26 +68,47 @@ public class OrderBinder {
      * @param binding binding for the order in the recycler view
      * @param order order to be bind
      */
-    public void bind(ItemOrderBinding binding, Order order) {
+    public void bind(ItemOrderBinding binding, Order order, OnOrderStatusChangeListener listener) {
+        binding.btnDispatch.setVisibility(View.GONE);
+        binding.btnDeliver.setVisibility(View.GONE);
+        binding.btnAccept.setVisibility(View.GONE);
+        binding.btnDecline.setVisibility(View.GONE);
+
         // Binding the order status
         switch (order.status) {
             case Order.OrderStatus.ACCEPTED:
                 binding.tvStatus.setText(R.string.accepted_state);
+                binding.tvStatus.setTextColor(ContextCompat.getColor(mContext, R.color.accepted_status));
+                binding.constraintLayout1.setBackground(new ColorDrawable(ContextCompat.getColor(mContext, R.color.accepted_status)));
+                binding.btnDispatch.setVisibility(View.VISIBLE);
                 break;
             case Order.OrderStatus.DECLINED:
                 binding.tvStatus.setText(R.string.declined_state);
+                binding.tvStatus.setTextColor(ContextCompat.getColor(mContext, R.color.declined_status));
+                binding.constraintLayout1.setBackground(new ColorDrawable(ContextCompat.getColor(mContext, R.color.declined_status)));
                 break;
             case Order.OrderStatus.DELIVERED:
                 binding.tvStatus.setText(R.string.delivered_state);
+                binding.tvStatus.setTextColor(ContextCompat.getColor(mContext, R.color.delivered_status));
+                binding.constraintLayout1.setBackground(new ColorDrawable(ContextCompat.getColor(mContext, R.color.delivered_status)));
                 break;
             case Order.OrderStatus.DISPATCHED:
                 binding.tvStatus.setText(R.string.dispatched_state);
+                binding.tvStatus.setTextColor(ContextCompat.getColor(mContext, R.color.dispatched_status));
+                binding.constraintLayout1.setBackground(new ColorDrawable(ContextCompat.getColor(mContext, R.color.dispatched_status)));
+                binding.btnDeliver.setVisibility(View.VISIBLE);
                 break;
             case Order.OrderStatus.CANCELLED:
                 binding.tvStatus.setText(R.string.cancelled_state);
+                binding.tvStatus.setTextColor(ContextCompat.getColor(mContext, R.color.cancelled_state));
+                binding.constraintLayout1.setBackground(new ColorDrawable(ContextCompat.getColor(mContext, R.color.cancelled_state)));
                 break;
             case Order.OrderStatus.WAITING:
                 binding.tvStatus.setText(R.string.waiting_state);
+                binding.tvStatus.setTextColor(ContextCompat.getColor(mContext, R.color.waiting_state));
+                binding.constraintLayout1.setBackground(new ColorDrawable(ContextCompat.getColor(mContext, R.color.waiting_state)));
+                binding.btnAccept.setVisibility(View.VISIBLE);
+                binding.btnDecline.setVisibility(View.VISIBLE);
                 break;
         }
 
@@ -99,6 +127,34 @@ public class OrderBinder {
 
         binding.btnCall.setOnClickListener(view -> {
             openDialer(order.userPhoneNo);
+        });
+
+        binding.btnDecline.setOnClickListener(view -> {
+            binding.btnDecline.setVisibility(View.GONE);
+            binding.btnAccept.setVisibility(View.GONE);
+            order.status = Order.OrderStatus.DECLINED;
+            listener.onStatusChange(order);
+        });
+
+        binding.btnAccept.setOnClickListener(view -> {
+            binding.btnAccept.setVisibility(View.GONE);
+            binding.btnDecline.setVisibility(View.GONE);
+            binding.btnDispatch.setVisibility(View.VISIBLE);
+            order.status = Order.OrderStatus.ACCEPTED;
+            listener.onStatusChange(order);
+        });
+
+        binding.btnDispatch.setOnClickListener(view -> {
+            binding.btnDispatch.setVisibility(View.GONE);
+            binding.btnDeliver.setVisibility(View.VISIBLE);
+            order.status = Order.OrderStatus.DISPATCHED;
+            listener.onStatusChange(order);
+        });
+
+        binding.btnDeliver.setOnClickListener(view -> {
+            binding.btnDeliver.setVisibility(View.GONE);
+            order.status = Order.OrderStatus.DELIVERED;
+            listener.onStatusChange(order);
         });
     }
 
@@ -172,5 +228,9 @@ public class OrderBinder {
     public static String getDateMonthTime(Timestamp timestamp) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM hh:mm aa");
         return simpleDateFormat.format(new Date(timestamp.toDate().getTime()));
+    }
+
+    public interface OnOrderStatusChangeListener {
+        void onStatusChange(Order order);
     }
 }
