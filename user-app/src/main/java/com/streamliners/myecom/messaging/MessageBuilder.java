@@ -13,7 +13,8 @@ public class MessageBuilder {
                 "\"notification\": {\n" +
                     "\"title\": \"New order received!\",\n" +
                     "\"body\": \"%s ordered %d items worth Rs. %d\",\n" +
-                    "\"icon\": \"ic_order\"\n" +
+                    "\"icon\": \"ic_order\",\n" +
+                    "\"tag\": \"%s\"\n" +
                 "}}\n";
             //     "\"data\": {\n" +
             //         "\"orderId\":\"sd57gs5g4g\"\n" +
@@ -24,9 +25,10 @@ public class MessageBuilder {
             "{\n" +
                     "\"to\":\"/topics/admin\",\n" +
                     "\"notification\": {\n" +
-                    "\"title\": \"Order cancelled!\",\n" +
-                    "\"body\": \"%s cancelled order worth Rs. %d\",\n" +
-                    "\"icon\": \"ic_order\"\n" +
+                        "\"title\": \"Order cancelled!\",\n" +
+                        "\"body\": \"%s cancelled order worth Rs. %d\",\n" +
+                        "\"icon\": \"ic_order\",\n" +
+                        "\"tag\": \"%s\"\n" +
                     "}}\n";
 
     /**
@@ -36,10 +38,10 @@ public class MessageBuilder {
      * @param total total amount of the order
      * @return message built
      */
-    public static String buildNewOrderMessage(String format, String userName, int noOfItems, int total) {
+    public static String buildNewOrderMessage(String format, String orderId, String userName, int noOfItems, int total) {
         if (format.equals(NEW_ORDER_FORMAT))
-            return String.format(format, userName, noOfItems, total);
+            return String.format(format, userName, noOfItems, total, orderId);
 
-        return String.format(format, userName, total);
+        return String.format(format, userName, total, orderId);
     }
 }

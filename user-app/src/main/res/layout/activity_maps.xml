@@ -24,7 +24,6 @@
         android:layout_marginBottom="8dp"
         android:backgroundTint="@color/design_default_color_primary"
         android:text="@string/select"
-        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_confirm"
         app:layout_constraintStart_toStartOf="parent" />
@@ -63,7 +62,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:src="@drawable/ic_current_location"
-        app:tint="@color/black"
+        app:tint="@color/white"
         app:backgroundTint="@color/design_default_color_primary"
         app:layout_constraintBottom_toBottomOf="@+id/map"
         app:layout_constraintEnd_toEndOf="parent" />

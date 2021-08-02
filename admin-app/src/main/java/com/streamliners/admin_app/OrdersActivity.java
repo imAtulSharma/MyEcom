@@ -101,7 +101,7 @@ public class OrdersActivity extends AppCompatActivity {
                 ordersHelper.changeOrderState(order.orderId, state, new OrdersHelper.OrderStateChangeListener() {
                     @Override
                     public void onSuccessfulChanged() {
-                        sendNotification(order.userDeviceToken, getOrderStatus(state));
+                        sendNotification(order.userDeviceToken, getOrderStatus(state), order.orderId);
                     }
 
                     @Override
@@ -130,13 +130,13 @@ public class OrdersActivity extends AppCompatActivity {
     /**
      * Starts the notification process to send it
      */
-    private void sendNotification(String token, String status) {
+    private void sendNotification(String token, String status, String orderId) {
         // Getting the authentication key first
         RemoteConfigHelper.getAuthenticationKey(OrdersActivity.this, new RemoteConfigHelper.OnRemoteConfigFetchedListener() {
             @Override
             public void onSuccessfullyFetched(String key) {
                 // Creating the message
-                String message = MessageBuilder.buildNewOrderMessage(token, status);
+                String message = MessageBuilder.buildNewOrderMessage(token, status, orderId);
 
                 // Sending the message and on complete displaying the appropriate dialogs
                 new FCMSender().send(message, key, new Callback() {
