@@ -135,6 +135,7 @@ public class FirebaseHelper {
                                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
+                                        order.orderId = documentReference.getId();
                                         listener.onCompleted(order);
                                     }
                                 })

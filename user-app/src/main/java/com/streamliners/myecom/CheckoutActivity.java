@@ -135,7 +135,7 @@ public class CheckoutActivity extends AppCompatActivity {
                 new OnCompleteListener<Order>() {
                     @Override
                     public void onCompleted(Order order) {
-                        sendNotification(name, order.noOfItems, (int) order.subTotal);
+                        sendNotification(order.orderId, name, order.noOfItems, (int) order.subTotal);
                     }
 
                     @Override
@@ -151,13 +151,13 @@ public class CheckoutActivity extends AppCompatActivity {
     /**
      * Starts the notification process to send it
      */
-    private void sendNotification(String userName, int noOfItems, int total) {
+    private void sendNotification(String orderId, String userName, int noOfItems, int total) {
         // Getting the authentication key first
         RemoteConfigHelper.getAuthenticationKey(CheckoutActivity.this, new RemoteConfigHelper.OnRemoteConfigFetchedListener() {
             @Override
             public void onSuccessfullyFetched(String key) {
                 // Creating the message
-                String message = MessageBuilder.buildNewOrderMessage(MessageBuilder.NEW_ORDER_FORMAT, userName, noOfItems, total);
+                String message = MessageBuilder.buildNewOrderMessage(MessageBuilder.NEW_ORDER_FORMAT, orderId, userName, noOfItems, total);
 
                 // Sending the message and on complete displaying the appropriate dialogs
                 new FCMSender().send(message, key, new Callback() {

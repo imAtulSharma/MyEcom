@@ -111,7 +111,7 @@ public class OrdersActivity extends AppCompatActivity {
                 firebaseHelper.cancelOrder(order.orderId, new FirebaseHelper.OnOrderCancelListener() {
                     @Override
                     public void onSuccessfulCancelled() {
-                        sendNotification(order.userName, order.noOfItems, (int) order.subTotal);
+                        sendNotification(order.orderId, order.userName, order.noOfItems, (int) order.subTotal);
                     }
 
                     @Override
@@ -128,7 +128,7 @@ public class OrdersActivity extends AppCompatActivity {
     /**
      * Starts the notification process to send it
      */
-    private void sendNotification(String userName, int noOfItems, int total) {
+    private void sendNotification(String orderId, String userName, int noOfItems, int total) {
         Toast.makeText(this, "Begins", Toast.LENGTH_SHORT).show();
 
         // Getting the authentication key first
@@ -136,7 +136,7 @@ public class OrdersActivity extends AppCompatActivity {
             @Override
             public void onSuccessfullyFetched(String key) {
                 // Creating the message
-                String message = MessageBuilder.buildNewOrderMessage(MessageBuilder.ORDER_CANCEL_FORMAT, userName, noOfItems, total);
+                String message = MessageBuilder.buildNewOrderMessage(MessageBuilder.ORDER_CANCEL_FORMAT, orderId, userName, noOfItems, total);
 
                 // Sending the message and on complete displaying the appropriate dialogs
                 new FCMSender().send(message, key, new Callback() {
