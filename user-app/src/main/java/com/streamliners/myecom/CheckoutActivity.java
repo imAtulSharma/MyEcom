@@ -292,10 +292,10 @@ public class CheckoutActivity extends AppCompatActivity {
      * To get the data from shared preferences
      */
     private void getDataFromSharedPreferences() {
-        name = preferences.getString(KEY_NAME, "");
+        name = preferences.getString(KEY_NAME, FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         mainBinding.tvName.getEditText().setText(name);
 
-        number = preferences.getString(KEY_NUMBER, "");
+        number = preferences.getString(KEY_NUMBER, FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber().substring(3));
         mainBinding.tvContactNo.getEditText().setText(number);
 
         address = preferences.getString(KEY_ADDRESS, "");
