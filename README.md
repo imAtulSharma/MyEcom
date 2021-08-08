@@ -1,8 +1,8 @@
 # MyEcom
 
-Download [USER-APP APK](https://github.com/imAtulSharma/MyEcom/releases/download/4.0/user-app-debug.apk)
+Download [USER-APP APK](https://github.com/imAtulSharma/MyEcom/releases/download/v1.0/user-app-debug.apk)
 
-Download [ADMIN-APP APK](https://github.com/imAtulSharma/MyEcom/releases/download/1.1/admin-app-debug.apk)
+Download [ADMIN-APP APK](https://github.com/imAtulSharma/MyEcom/releases/download/v1.0.0/admin-app-debug.apk)
 
 
 ## Features in the application
