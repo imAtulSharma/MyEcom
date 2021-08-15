@@ -127,11 +127,12 @@ public class Cart implements Serializable {
     public void decrement(Product product, Variant variant) {
         String key = product.name + " " + variant.name;
 
+        totalAmount -= cartItems.get(key).cost();
+
         // Update quantity
         cartItems.get(key).qty--;
 
         // update cart details
-        totalAmount -= variant.price;
         numberOfItems--;
 
         // removing from the  cart items

@@ -26,7 +26,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final Context context;
     private final List<Product> products;
     // For the visible items
-    private final List<Product> visibleProducts;
+    public final List<Product> visibleProducts;
     private final ProductBinder productBinder;
     private final AdapterCallbacksListener mListener;
 

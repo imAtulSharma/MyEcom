@@ -15,16 +15,21 @@ import android.widget.Toast;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
+import com.streamliners.models.CartItem;
+import com.streamliners.models.ProductType;
 import com.streamliners.models.listeners.OnCompleteListener;
 import com.streamliners.models.models.Cart;
 import com.streamliners.models.models.Product;
+import com.streamliners.models.models.Variant;
 import com.streamliners.myecom.controllers.AdapterCallbacksListener;
 import com.streamliners.myecom.controllers.ProductsAdapter;
 import com.streamliners.myecom.databinding.ActivityMainBinding;
 import com.streamliners.myecom.tmp.FirebaseHelper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     SharedPreferences mPrefs;
@@ -32,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private ProductsAdapter adapter;
     private Cart cart = new Cart();
     List<Product> products;
+    List<Product> productList;
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     @Override
@@ -51,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         helper.getProducts(products, new OnCompleteListener<List<Product>>() {
             @Override
             public void onCompleted(List<Product> products) {
+                productList = new ArrayList<>(products);
                 mainBinding.progressBar.setVisibility(View.GONE);
                 if (products.isEmpty()) mainBinding.tvNoProducts.setVisibility(View.GONE);
                 setupAdapter();
@@ -66,6 +73,49 @@ public class MainActivity extends AppCompatActivity {
 
         mainBinding.cartSummary.setOnClickListener(view -> checkout());
         if (cart.cartItems.isEmpty()) mainBinding.cartSummary.setVisibility(View.GONE);
+    }
+
+    private void checkCart(){
+
+        Set<String> keys = new HashSet<>(cart.cartItems.keySet());
+
+        for (String name : keys){
+            int found = 0;
+            for (Product product : productList){
+                if (product.type == ProductType.TYPE_VARIANT_BASED_PRODUCT){
+                    for (Variant variant : product.variants){
+                        if (name.equals(product.name + " " + variant.name)){
+                            found = 1;
+                            float qty = cart.cartItems.get(name).qty;
+                            for (int i=0; i<qty; i++)
+                                cart.decrement(product, variant);
+
+                            for (int i=0; i<qty; i++)
+                                cart.add(product, variant);
+                        }
+                    }
+                }
+                else {
+                    if (product.name.equals(name)){
+                        found =1;
+                        float qty = cart.cartItems.get(name).qty;
+                        cart.remove(product);
+                        cart.add(product, qty);
+
+                    }
+                }
+
+                if (found == 1){
+                    break;
+                }
+            }
+            if (found == 0){
+                cart.numberOfItems -= cart.cartItems.get(name).qty;
+                cart.totalAmount -= cart.cartItems.get(name).cost();
+                cart.cartItems.remove(name);
+            }
+        }
+        updateCartSummary();
     }
 
     @Override
@@ -149,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
 
         mainBinding.list.setLayoutManager(new LinearLayoutManager(this));
         mainBinding.list.setAdapter(adapter);
+        checkCart();
     }
 
     public void updateCartSummary(){

@@ -51,9 +51,9 @@ public class FirebaseHelper {
                         for (DocumentSnapshot snapshot : queryDocumentSnapshots){
                             if (snapshot.exists()){
                                 products.add(snapshot.toObject(Product.class));
-                                listener.onCompleted(products);
                             }
                         }
+                        listener.onCompleted(products);
                     }
                 });
     }
